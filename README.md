@@ -13,6 +13,7 @@ keras
 pandas
 scikit-learn
 tensorflow
+virtualenv
 ```
 
 ### Installing
