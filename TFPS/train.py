@@ -25,7 +25,7 @@ def train_model(model, X_train, y_train, name, config):
         config: Dict, parameter for train.
     """
 
-    model.compile(loss="mse", optimizer="rmsprop", metrics=['mape'])
+    model.compile(loss="mse", optimizer="rmsprop", metrics=['mape'])                    # predified loss and optimisers
     # early = EarlyStopping(monitor='val_loss', patience=30, verbose=0, mode='auto')
     hist = model.fit(
         X_train, y_train,
@@ -33,7 +33,7 @@ def train_model(model, X_train, y_train, name, config):
         epochs=config["epochs"],
         validation_split=0.05)
 
-    model.save('model/' + name + '.h5')
+    model.save('model/' + name + '.h5')                                      # exports save files for the trained data set
     df = pd.DataFrame.from_dict(hist.history)
     df.to_csv('model/' + name + ' loss.csv', encoding='utf-8', index=False)
 
@@ -85,22 +85,22 @@ def main(argv):
         help="Model to train.")
     args = parser.parse_args()
 
-    lag = 12
+    lag = 12                                        # lag is hard coded to be 12 
     config = {"batch": 256, "epochs": 600}
     file1 = 'data/train.csv'
     file2 = 'data/test.csv'
     X_train, y_train, _, _, _ = process_data(file1, file2, lag)
 
-    if args.model == 'lstm':
-        X_train = np.reshape(X_train, (X_train.shape[0], X_train.shape[1], 1))
+    if args.model == 'lstm':                                    
+        X_train = np.reshape(X_train, (X_train.shape[0], X_train.shape[1], 1))      # this is the model for lstm (3d data set)
         m = model.get_lstm([12, 64, 64, 1])
         train_model(m, X_train, y_train, args.model, config)
     if args.model == 'gru':
-        X_train = np.reshape(X_train, (X_train.shape[0], X_train.shape[1], 1))
+        X_train = np.reshape(X_train, (X_train.shape[0], X_train.shape[1], 1))      # this is the model for gru (3d data set)
         m = model.get_gru([12, 64, 64, 1])
         train_model(m, X_train, y_train, args.model, config)
     if args.model == 'saes':
-        X_train = np.reshape(X_train, (X_train.shape[0], X_train.shape[1]))
+        X_train = np.reshape(X_train, (X_train.shape[0], X_train.shape[1]))      # this is the model for seas (2d data set)
         m = model.get_saes([12, 400, 400, 400, 1])
         train_seas(m, X_train, y_train, args.model, config)
 
