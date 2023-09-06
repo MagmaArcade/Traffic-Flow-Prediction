@@ -86,7 +86,7 @@ def main(argv):
     args = parser.parse_args()
 
     lag = 12                                        # lag is hard coded to be 12 
-    config = {"batch": 256, "epochs": 600}
+    config = {"batch": 256, "epochs": 2}          # epochs define the number of iterations allowed for the model
     file1 = 'data/train.csv'
     file2 = 'data/test.csv'
     X_train, y_train, _, _, _ = process_data(file1, file2, lag)
