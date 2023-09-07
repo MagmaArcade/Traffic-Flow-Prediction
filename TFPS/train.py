@@ -87,9 +87,9 @@ def main(argv):
 
     lag = 12                                        # lag is hard coded to be 12 
     config = {"batch": 256, "epochs": 2}          # epochs define the number of iterations allowed for the model
-    file1 = 'data/train.csv'
-    file2 = 'data/test.csv'
-    X_train, y_train, _, _, _ = process_data(file1, file2, lag)
+    file1 = 'data/Scats Data October 2006.csv'
+    #file2 = 'data/test.csv'
+    X_train, y_train, _, _, _ = process_data(file1, lag)
 
     if args.model == 'lstm':                                    
         X_train = np.reshape(X_train, (X_train.shape[0], X_train.shape[1], 1))      # this is the model for lstm (3d data set)

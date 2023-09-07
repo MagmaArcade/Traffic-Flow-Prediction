@@ -6,7 +6,7 @@ import pandas as pd
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
 
 
-def process_data(train, test, lags):
+def process_data(data, lags):
     """Process data
     Reshape and split train\test data.
 
@@ -21,14 +21,31 @@ def process_data(train, test, lags):
         y_test: ndarray.
         scaler: StandardScaler.
     """
-    attr = 'Lane 1 Flow (Veh/5 Minutes)'
-    df1 = pd.read_csv(train, encoding='utf-8').fillna(0)  # this is used to read the excel file
-    df2 = pd.read_csv(test, encoding='utf-8').fillna(0)
 
-    # scaler = StandardScaler().fit(df1[attr].values)
-    scaler = MinMaxScaler(feature_range=(0, 1)).fit(df1[attr].values.reshape(-1, 1))    # scales the data so the model can converge faster
-    flow1 = scaler.transform(df1[attr].values.reshape(-1, 1)).reshape(1, -1)[0]
-    flow2 = scaler.transform(df2[attr].values.reshape(-1, 1)).reshape(1, -1)[0]
+    df1 = pd.read_csv(data, encoding='utf-8').fillna(0) # this is used to read the csv file
+    df2 = df1.copy()
+
+    #Couldn't figure out an easy way to split the data into test and train, while also keeping the labels. 
+    #It makes 2 identical DataFrames, and then hopefully deletes the test from one, and the train from the other.
+    df2.drop(df2.index[-1])
+    i = df1.shape[0] -1
+    while (i > 0):
+        i -=1
+        #1/3 of the data becomes test. No reason for that specific number other than Xiaochus example data
+        if ((i/3).is_integer()):
+            df1.drop(df1.index[i])
+        else:
+            df2.drop(df2.index[i])
+      
+
+
+
+    #takes the range of values from V00 to V95, not sure if its ordered with all V00 next to each other or V00-V95 and then the next row
+    scaler = MinMaxScaler(feature_range=(0, 1)).fit(df1.loc[:,'V00':'V95'].values.reshape(-1, 1)) # scales the data so the model can converge faster
+    flow1 = scaler.transform(df1.loc[:,'V00':'V95'].values.reshape(-1, 1)).reshape(1, -1)[0]
+    flow2 = scaler.transform(df2.loc[:,'V00':'V95'].values.reshape(-1, 1)).reshape(1, -1)[0]
+    
+
 
     train, test = [], []    # initialise the data sets as empty
     for i in range(lags, len(flow1)):   
