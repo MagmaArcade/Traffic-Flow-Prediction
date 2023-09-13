@@ -1,19 +1,25 @@
-"""
-Traffic Flow Prediction with Neural Networks(SAEs、LSTM、GRU).
-"""
+""" Traffic Flow Prediction with Neural Networks(SAEs, LSTM, GRU). """
+
+# Import necessary libraries and modules
 import math
 import warnings
+import os
+import sys
+import argparse
+
 import numpy as np
 import pandas as pd
-from data.data import process_data
-from keras.models import load_model
-from tensorflow.keras.utils import plot_model
 import sklearn.metrics as metrics
 import matplotlib as mpl
 import matplotlib.pyplot as plt
+
+from data.data import process_data
+from keras.models import load_model
+from tensorflow.keras.utils import plot_model
 warnings.filterwarnings("ignore")
 
 
+# Define a function to calculate Mean Absolute Percentage Error (MAPE)
 def MAPE(y_true, y_pred):
     """Mean Absolute Percentage Error
     Calculate the mape.
@@ -39,7 +45,7 @@ def MAPE(y_true, y_pred):
 
     return mape
 
-
+# Define a function to evaluate regression model performance
 def eva_regress(y_true, y_pred):
     """Evaluation
     evaluate the predicted resul.
@@ -62,6 +68,7 @@ def eva_regress(y_true, y_pred):
     print('r2:%f' % r2)
 
 
+# Define a function to plot true and predicted traffic flow data
 def plot_results(y_true, y_preds, names):
     """Plot
     Plot the true data and predicted data.
@@ -93,15 +100,35 @@ def plot_results(y_true, y_preds, names):
     plt.show()
 
 
+# Define the main function for evaluating and visualizing neural network models
 def main():
-    lstm = load_model('model/lstm.h5')
-    gru = load_model('model/gru.h5')
-    saes = load_model('model/saes.h5')
-    models = [lstm, gru, saes]
+    # Load pre-trained neural network models
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--scats",
+        default=970,
+        help="SCATS site number.")
+    parser.add_argument(
+        "--junction",
+        default=1,
+        help="The approach to the site.")
+    args = parser.parse_args()
+    models = []
     names = ['LSTM', 'GRU', 'SAEs']
 
+    count = 0
+    for name in names:
+        file = "model/{0}/{1}/{2}.h5".format(name.lower(), args.scats, args.junction)
+        if os.path.exists(file):
+            models.append(load_model(file))
+        else:
+            names.pop(count)
+        count += 1
+
+
+
     lag = 12
-    file1 = 'data/Scats Data October 2006.csv'
+    #file1 = 'data/Scats Data October 2006.csv'                                                  # this is the data file location 
     #file2 = 'data/test.csv'
     _, _, X_test, y_test, scaler = process_data(file1, lag)
     y_test = scaler.inverse_transform(y_test.reshape(-1, 1)).reshape(1, -1)[0]
@@ -109,10 +136,10 @@ def main():
     y_preds = []
     for name, model in zip(names, models):
         if name == 'SAEs':
-            X_test = np.reshape(X_test, (X_test.shape[0], X_test.shape[1]))
+            X_test = np.reshape(X_test, (X_test.shape[0], X_test.shape[1]))             # reshapes the SEAs mdoel to be 2D
         else:
             X_test = np.reshape(X_test, (X_test.shape[0], X_test.shape[1], 1))
-        file = 'images/' + name + '.png'
+        file = 'images/' + name + '.png'                                                # stores a visualisation of the model architecture
         plot_model(model, to_file=file, show_shapes=True)
         predicted = model.predict(X_test)
         predicted = scaler.inverse_transform(predicted.reshape(-1, 1)).reshape(1, -1)[0]

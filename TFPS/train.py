@@ -1,6 +1,6 @@
-"""
-Train the NN model.
-"""
+""" Train the NN model """
+
+# Import necessary libraries and modules
 import sys
 import warnings
 import argparse
@@ -12,7 +12,7 @@ from keras.models import Model
 from keras.callbacks import EarlyStopping
 warnings.filterwarnings("ignore")
 
-
+# Define a function to train a single neural network model
 def train_model(model, X_train, y_train, name, config):
     """train
     train a single model.
@@ -24,20 +24,24 @@ def train_model(model, X_train, y_train, name, config):
         name: String, name of model.
         config: Dict, parameter for train.
     """
-
-    model.compile(loss="mse", optimizer="rmsprop", metrics=['mape'])                    # predified loss and optimisers
+    # Compile the model with loss and optimizer
+    model.compile(loss="mse", optimizer="rmsprop", metrics=['mape'])
     # early = EarlyStopping(monitor='val_loss', patience=30, verbose=0, mode='auto')
+
+    # Train the model and store the training history
     hist = model.fit(
         X_train, y_train,
         batch_size=config["batch"],
         epochs=config["epochs"],
         validation_split=0.05)
 
-    model.save('model/' + name + '.h5')                                      # exports save files for the trained data set
+    # Save the trained model to a file and export the training history to a CSV file
+    model.save('model/' + name + '.h5')
     df = pd.DataFrame.from_dict(hist.history)
     df.to_csv('model/' + name + ' loss.csv', encoding='utf-8', index=False)
 
 
+# Define a function to train Stacked Autoencoders (SAEs)
 def train_seas(models, X_train, y_train, name, config):
     """train
     train the SAEs model.
@@ -77,12 +81,21 @@ def train_seas(models, X_train, y_train, name, config):
     train_model(saes, X_train, y_train, name, config)
 
 
+# Define the main function for training neural network models
 def main(argv):
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--model",
         default="lstm",
         help="Model to train.")
+    parser.add_argument(
+        "--scats",
+        default="all",
+        help="SCATS site number.")
+    parser.add_argument(
+        "--junction",
+        default="all",
+        help="The approach to the site.")
     args = parser.parse_args()
 
     lag = 12                                        # lag is hard coded to be 12 

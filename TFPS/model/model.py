@@ -1,10 +1,11 @@
-"""
-Defination of NN model
-"""
-from keras.layers import Dense, Dropout, Activation, LSTM, GRU             # keras is a deep learing libary that works with tensorflow
+""" Defination of NN model """
+
+# Import necessary libraries and modules
+from keras.layers import Dense, Dropout, Activation, LSTM, GRU
 from keras.models import Sequential
 
 
+# Define a function to create an LSTM (Long Short-Term Memory) neural network model
 def get_lstm(units):
     """LSTM(Long Short-Term Memory)
     Build LSTM Model.
@@ -24,6 +25,7 @@ def get_lstm(units):
     return model
 
 
+# Define a function to create a GRU (Gated Recurrent Unit) neural network model
 def get_gru(units):
     """GRU(Gated Recurrent Unit)
     Build GRU Model.
@@ -43,6 +45,7 @@ def get_gru(units):
     return model
 
 
+# Define a function to create a single-layer Auto-Encoder (SAE) neural network model
 def _get_sae(inputs, hidden, output):
     """SAE(Auto-Encoders)
     Build SAE Model.
@@ -64,6 +67,7 @@ def _get_sae(inputs, hidden, output):
     return model
 
 
+# Define a function to create a Stacked Auto-Encoders (SAEs) neural network model
 def get_saes(layers):
     """SAEs(Stacked Auto-Encoders)
     Build SAEs Model.
