@@ -50,6 +50,8 @@ These are the details for the traffic flow prediction experiment.
 | GRU | 19.35 | 679.71 | 26.07 | 103.312780% | 0.90 | 0.9099 |
 | SAEs | 22.20 | 954.53 | 30.89 | 102.27% | 0.87 | 0.8756 |
 
+![evaluate](TFPS/images/eva 2epochs.png) to be added
+
 600 epoch trial
 | Metrics | MAE | MSE | RMSE | MAPE |  R2  | Explained variance score |
 | ------- |:---:| :--:| :--: | :--: | :--: | :----------------------: |
