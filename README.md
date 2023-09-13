@@ -7,13 +7,14 @@ These instructions will explain the process of getting the system up and running
 
 ### Prerequisites
 
-Python 3.7
+The following Python 3.7 Libaries are required to run the program. for windowns use pip install, for mac use ---
 ```
 keras
 pandas
 scikit-learn
 tensorflow
 virtualenv
+pydot-ng
 ```
 
 ### Installing
@@ -42,7 +43,14 @@ python main.py
 
 These are the details for the traffic flow prediction experiment.
 
+2 epoch trial
+| Metrics | MAE | MSE | RMSE | MAPE |  R2  | Explained variance score |
+| ------- |:---:| :--:| :--: | :--: | :--: | :----------------------: |
+| LSTM | 17.97 | 613.68 | 24.77 | 74.17% | 0.91 | 0.9245 |
+| GRU | 19.35 | 679.71 | 26.07 | 103.312780% | 0.90 | 0.9099 |
+| SAEs | 22.20 | 954.53 | 30.89 | 102.27% | 0.87 | 0.8756 |
 
+600 epoch trial
 | Metrics | MAE | MSE | RMSE | MAPE |  R2  | Explained variance score |
 | ------- |:---:| :--:| :--: | :--: | :--: | :----------------------: |
 | LSTM | - | - | - | - | - | - |
