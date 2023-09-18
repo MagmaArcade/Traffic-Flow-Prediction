@@ -13,9 +13,12 @@ import sklearn.metrics as metrics
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 
+# Import custom functions and classes
 from data.data import process_data
 from keras.models import load_model
 from tensorflow.keras.utils import plot_model
+
+# Ignore warning messages
 warnings.filterwarnings("ignore")
 
 
@@ -102,7 +105,7 @@ def plot_results(y_true, y_preds, names):
 
 # Define the main function for evaluating and visualizing neural network models
 def main():
-    # Load pre-trained neural network models
+    # Create an ArgumentParser object to handle command line arguments
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--scats",
@@ -117,31 +120,31 @@ def main():
     names = ['LSTM', 'GRU', 'SAEs']
 
     count = 0
+    # Loop through each model name in the 'names' list
     for name in names:
+        # Construct the file path to the saved model using the model name, SCATS site number, and junction
         file = "model/{0}/{1}/{2}.h5".format(name.lower(), args.scats, args.junction)
+
         if os.path.exists(file):
             models.append(load_model(file))
         else:
             names.pop(count)
         count += 1
 
-
-
     lag = 12
     #file1 = 'data/Scats Data October 2006.csv'                                                  # this is the data file location 
-    #file2 = 'data/test.csv'
-    _, _, X_test, y_test, scaler = process_data(file1, lag)
+    _, _, x_test, y_test, scaler = process_data(args.scats, args.junction, lag)
     y_test = scaler.inverse_transform(y_test.reshape(-1, 1)).reshape(1, -1)[0]
 
     y_preds = []
     for name, model in zip(names, models):
         if name == 'SAEs':
-            X_test = np.reshape(X_test, (X_test.shape[0], X_test.shape[1]))             # reshapes the SEAs mdoel to be 2D
+            x_test = np.reshape(x_test, (x_test.shape[0], x_test.shape[1]))             # reshapes the SEAs mdoel to be 2D
         else:
-            X_test = np.reshape(X_test, (X_test.shape[0], X_test.shape[1], 1))
+            x_test = np.reshape(x_test, (x_test.shape[0], x_test.shape[1], 1))
         file = 'images/' + name + '.png'                                                # stores a visualisation of the model architecture
         plot_model(model, to_file=file, show_shapes=True)
-        predicted = model.predict(X_test)
+        predicted = model.predict(x_test)
         predicted = scaler.inverse_transform(predicted.reshape(-1, 1)).reshape(1, -1)[0]
         y_preds.append(predicted[:288])
         print(name)
@@ -151,4 +154,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    main(sys.argv)
