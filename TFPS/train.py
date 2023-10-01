@@ -96,7 +96,7 @@ def main(argv):
     args = parser.parse_args()
 
     #Define some setting
-    lag = 12
+    lag = 4
     config = {"batch": 256, "epochs": 600}
     data = 'data/Scats Data October 2006.csv'
 

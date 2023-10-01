@@ -8,7 +8,7 @@ import numpy as np
 import pandas as pd
 from data.data import process_data
 from keras.models import load_model
-from keras.utils.vis_utils import plot_model
+from tensorflow.keras.utils import plot_model
 import sklearn.metrics as metrics
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -114,7 +114,7 @@ def main():
     names = ['LSTM', 'GRU', 'SAEs']
 
     #Define some setting
-    lag = 12
+    lag = 4
     data = 'data/Scats Data October 2006.csv'
 
     #Call data.py process_data function for testing data
