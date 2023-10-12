@@ -28,18 +28,21 @@ def process_data(data, lags):
     #Configure separate data sets
     df2.drop(df2.index[-1])
     i = df1.shape[0] -1
-    while (i > 0):
-        i -=1
+    while (i > -1):
         # split DataFrame into 2 data sets
         if ((i/3).is_integer()):
-            df1.drop(df1.index[i])  # train set (2/3)
+            df1 = df1.drop(df1.index[i])  # train set (2/3)
         else:
-            df2.drop(df2.index[i])  # test set (1/3)
+            df2 = df2.drop(df2.index[i])  # test set (1/3)
+        i -=1
+    df1 = df1.reset_index(drop=True)
+    df2 = df2.reset_index(drop=True)
       
     #Reshapes the DataFrames to only take values from V00 to V95
     scaler = MinMaxScaler(feature_range=(0, 1)).fit(df1.loc[:,'V00':'V95'].values.reshape(-1, 1))
     flow1 = scaler.transform(df1.loc[:,'V00':'V95'].values.reshape(-1, 1)).reshape(1, -1)[0]
     flow2 = scaler.transform(df2.loc[:,'V00':'V95'].values.reshape(-1, 1)).reshape(1, -1)[0]
+
    
     #Initialise the data sets as empty
     train, test = [], []   
