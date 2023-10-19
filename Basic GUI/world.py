@@ -8,6 +8,8 @@ For class use only. Do not publically share or post this code without permission
 
 from vector2d import Vector2D
 from matrix33 import Matrix33
+from line import Line
+from scat import Scat
 from graphics import egi
 import pandas as pd
 from data import process_data
@@ -19,21 +21,17 @@ class World(object):
     def __init__(self, cx, cy):
         self.cx = cx
         self.cy = cy
-        self.target = Vector2D(cx / 4, 3*cy / 4)
-        self.target2 = Vector2D(cx / 4, cy / 4)
-        self.hunter = None
-        self.agents = []
-        self.bullets = []
-        self.mtargets = []
-        self.paused = True
-        self.show_info = True
-        self.targ = 1
         self.df = process_data('Scats Data October 2006.csv')
         self.mix = self.df.loc[0, 'NB_LONGITUDE']
         self.max = self.df.loc[0, 'NB_LONGITUDE']
         self.miy = self.df.loc[0, 'NB_LATITUDE']
         self.may = self.df.loc[0, 'NB_LATITUDE']
-        self.dots = []
+        self.scats = []
+        self.origin = 3001
+        self.destination = 2846
+        self.successes = []
+        self.successInt = 0
+        self.toggle = False
     
         i = 1
         while (i<self.df.shape[0]):
@@ -50,88 +48,75 @@ class World(object):
         self.my = self.may-self.miy
         self.mx = self.max-self.mix
         while (i<self.df.shape[0]):
-            self.dots.append(Vector2D((self.df.loc[i,'NB_LONGITUDE']-self.mix)/self.mx*self.cx*0.9 +self.cx*0.05, (self.df.loc[i,'NB_LATITUDE']-self.miy)/self.my*self.cy*0.9 +self.cy*0.05))
+            self.scats.append(Scat(self,Vector2D((self.df.loc[i,'NB_LONGITUDE']-self.mix)/self.mx*self.cx*0.9 +self.cx*0.05, (self.df.loc[i,'NB_LATITUDE']-self.miy)/self.my*self.cy*0.9 +self.cy*0.05),self.df.loc[i,'SCATS_Number'],self.df.loc[i,'SCATS Neighbours'].split(" ")))
             i +=1
 
         i = 0
         self.lines = []
         while (i<self.df.shape[0]):
-            x = self.df.loc[i,'SCATS Neighbours'].split()
+            x = self.df.loc[i,'SCATS Neighbours'].split(" ")
             for j in x:
-                if (int(j) > self.df.loc[i,'SCATS_Number']):
+                if (float(j) > self.df.loc[i,'SCATS_Number']):
                     k = i
                     while (k<self.df.shape[0]):
-                        if (int(j) == self.df.loc[k,'SCATS_Number']):
-                            temp = (Vector2D((self.df.loc[i,'NB_LONGITUDE']-self.mix)/self.mx*self.cx*0.9 +self.cx*0.05, (self.df.loc[i,'NB_LATITUDE']-self.miy)/self.my*self.cy*0.9 +self.cy*0.05)),Vector2D((self.df.loc[k,'NB_LONGITUDE']-self.mix)/self.mx*self.cx*0.9 +self.cx*0.05, (self.df.loc[k,'NB_LATITUDE']-self.miy)/self.my*self.cy*0.9 +self.cy*0.05)
-                            self.lines.append(temp)
+                        if (float(j) == self.df.loc[k,'SCATS_Number']):
+                            temp = (),
+                            self.lines.append(Line(self,Vector2D((self.df.loc[i,'NB_LONGITUDE']-self.mix)/self.mx*self.cx*0.9 +self.cx*0.05, (self.df.loc[i,'NB_LATITUDE']-self.miy)/self.my*self.cy*0.9 +self.cy*0.05),Vector2D((self.df.loc[k,'NB_LONGITUDE']-self.mix)/self.mx*self.cx*0.9 +self.cx*0.05, (self.df.loc[k,'NB_LATITUDE']-self.miy)/self.my*self.cy*0.9 +self.cy*0.05),self.df.loc[i,'SCATS_Number'],self.df.loc[k,'SCATS_Number']))
                         k+=1
-                    
-
-            print(self.lines)
             i += 1
 
+        for scat in self.scats:
+            if (scat.SCAT == self.origin):
+                scat.color = "ORANGE"
+            elif (scat.SCAT == self.destination):
+                scat.color = "BLUE"
 
+    def reset(self):
+        for line in self.lines:
+            line.color = "RED"
+            self.successes = []
+            self.successInt = -1
+    
+    def resetOrigin(self):
+        for scat in self.scats:
+            if (scat.SCAT == self.origin):
+                scat.color = "GREEN"
+                break
 
+    def resetDestination(self):
+        for scat in self.scats:
+            if (scat.SCAT == self.destination):
+                scat.color = "GREEN"
+                break
 
-    #def update(self, delta):
-    #    if not self.paused:
-            #for agent in self.agents:
-            #    agent.update(delta)
+    def switchRoute(self):
+        for line in self.lines:
+            line.color = "RED"
+        if ((self.successInt +1) < len(self.successes)):
+            self.successInt = self.successInt +1
+        else:
+            self.successInt = 0
+        print(self.successInt)
+        i =1
+        while (i < len(self.successes[self.successInt].path)):
+            for line in self.lines:
+                if ((line.SCAT1 == self.successes[self.successInt].path[i-1] or line.SCAT1 == self.successes[self.successInt].path[i]) and (line.SCAT2 == self.successes[self.successInt].path[i-1] or line.SCAT2 == self.successes[self.successInt].path[i])):
+                    line.color = "ORANGE"
+            i += 1
+        print("Time Taken: ",self.successes[self.successInt].distance)
 
-    #        for bullet in self.bullets:
-    #            bullet.update(delta)
-
-    #        for targ in self.mtargets:
-    #            targ.update(delta)
+        
+        
 
     def render(self):
 
-        
-        for agent in self.agents:
-            agent.render()
-
-        for bullet in self.bullets:
-            bullet.render()
-
-        for targ in self.mtargets:
-            targ.render()
-
-        egi.red_pen()
-        for j in self.lines:
-            egi.line_by_pos(j[0],j[1])
-
-        egi.green_pen()
-        i=0
-        while (i<self.df.shape[0]):
-            egi.cross(self.dots[i], 10)
-            i +=1
+        for line in self.lines:
+            line.render()
             
-        
+        for scat in self.scats:
+            scat.render()
+    
 
-        #if self.target:
-        #    egi.red_pen()
-        #    egi.cross(self.target, 10)
-
-        #if self.target2:
-        #    egi.blue_pen()
-        #    egi.cross(self.target2, 10)
-
-        #if self.show_info:
-            #infotext = ', '.join(set(agent.mode for agent in self.agents))
-            #egi.white_pen()
-            #egi.text_at_pos(0, 0, infotext)
-
-    def wrap_around(self, pos):
-        ''' Treat world as a toroidal space. Updates parameter object pos '''
-        max_x, max_y = self.cx, self.cy
-        if pos.x > max_x:
-            pos.x = pos.x - max_x
-        elif pos.x < 0:
-            pos.x = max_x - pos.x
-        if pos.y > max_y:
-            pos.y = pos.y - max_y
-        elif pos.y < 0:
-            pos.y = max_y - pos.y
 
     def transform_point(self, point, pos, forward, side):
         # make a copy of original points (so we don't trash them)
