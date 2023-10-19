@@ -73,6 +73,10 @@ def process_data(data, lags):
     #For the IDM acceleration we are using Dijkstra's Algorithm taking into account that all distances cant be -
     #To search the shortest distance and path between 2 nodes we are using a graph
 
+    # Set negative values to zero
+    flow1 = np.maximum(flow1, 0)
+    flow2 = np.maximum(flow2, 0)
+
     # Create a graph
     G = nx.Graph()
 
