@@ -11,6 +11,10 @@ class Scat(object):
         self.SCAT = SCAT
         self.neighbours = []
         self.color = 'GREEN'
+
+        self.distance = 0
+        self.fSCAT = float(0000)
+
         for string in neighbours:
             self.neighbours.append(float(string))
 

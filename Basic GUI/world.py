@@ -26,6 +26,8 @@ class World(object):
         self.max = self.df.loc[0, 'NB_LONGITUDE']
         self.miy = self.df.loc[0, 'NB_LATITUDE']
         self.may = self.df.loc[0, 'NB_LATITUDE']
+        self.latM = 111.11
+        self.xM = 0
         self.scats = []
         self.origin = 3001
         self.destination = 2846
@@ -44,11 +46,17 @@ class World(object):
             if (self.may < self.df.loc[i, 'NB_LATITUDE']):
                 self.may = self.df.loc[i, 'NB_LATITUDE']
             i +=1
+        
+        self.xM = (self.max - self.mix)*self.latM/(self.cx*0.625)
+        self.ratio = (self.max-self.mix)/(self.may - self.miy)
+
+
+
         i = 0
         self.my = self.may-self.miy
         self.mx = self.max-self.mix
         while (i<self.df.shape[0]):
-            self.scats.append(Scat(self,Vector2D((self.df.loc[i,'NB_LONGITUDE']-self.mix)/self.mx*self.cx*0.9 +self.cx*0.05, (self.df.loc[i,'NB_LATITUDE']-self.miy)/self.my*self.cy*0.9 +self.cy*0.05),self.df.loc[i,'SCATS_Number'],self.df.loc[i,'SCATS Neighbours'].split(" ")))
+            self.scats.append(Scat(self,Vector2D((self.df.loc[i,'NB_LONGITUDE']-self.mix)/self.mx*self.cx*0.675 +self.cx*0.05, (self.df.loc[i,'NB_LATITUDE']-self.miy)/self.ratio/self.my*self.cy*0.9 +self.cy*0.05),self.df.loc[i,'SCATS_Number'],self.df.loc[i,'SCATS Neighbours'].split(" ")))
             i +=1
 
         i = 0
@@ -61,7 +69,7 @@ class World(object):
                     while (k<self.df.shape[0]):
                         if (float(j) == self.df.loc[k,'SCATS_Number']):
                             temp = (),
-                            self.lines.append(Line(self,Vector2D((self.df.loc[i,'NB_LONGITUDE']-self.mix)/self.mx*self.cx*0.9 +self.cx*0.05, (self.df.loc[i,'NB_LATITUDE']-self.miy)/self.my*self.cy*0.9 +self.cy*0.05),Vector2D((self.df.loc[k,'NB_LONGITUDE']-self.mix)/self.mx*self.cx*0.9 +self.cx*0.05, (self.df.loc[k,'NB_LATITUDE']-self.miy)/self.my*self.cy*0.9 +self.cy*0.05),self.df.loc[i,'SCATS_Number'],self.df.loc[k,'SCATS_Number']))
+                            self.lines.append(Line(self,Vector2D((self.df.loc[i,'NB_LONGITUDE']-self.mix)/self.mx*self.cx*0.675 +self.cx*0.05, (self.df.loc[i,'NB_LATITUDE']-self.miy)/self.ratio/self.my*self.cy*0.9 +self.cy*0.05),Vector2D((self.df.loc[k,'NB_LONGITUDE']-self.mix)/self.mx*self.cx*0.675 +self.cx*0.05, (self.df.loc[k,'NB_LATITUDE']-self.miy)/self.ratio/self.my*self.cy*0.9 +self.cy*0.05),self.df.loc[i,'SCATS_Number'],self.df.loc[k,'SCATS_Number']))
                         k+=1
             i += 1
 
@@ -70,6 +78,8 @@ class World(object):
                 scat.color = "ORANGE"
             elif (scat.SCAT == self.destination):
                 scat.color = "BLUE"
+
+        
 
     def reset(self):
         for line in self.lines:
@@ -96,14 +106,12 @@ class World(object):
             self.successInt = self.successInt +1
         else:
             self.successInt = 0
-        print(self.successInt)
         i =1
         while (i < len(self.successes[self.successInt].path)):
             for line in self.lines:
                 if ((line.SCAT1 == self.successes[self.successInt].path[i-1] or line.SCAT1 == self.successes[self.successInt].path[i]) and (line.SCAT2 == self.successes[self.successInt].path[i-1] or line.SCAT2 == self.successes[self.successInt].path[i])):
                     line.color = "ORANGE"
             i += 1
-        print("Time Taken: ",self.successes[self.successInt].distance)
 
         
         
@@ -115,6 +123,22 @@ class World(object):
             
         for scat in self.scats:
             scat.render()
+
+        egi.color = "WHITE"
+        egi.text_at_pos(0.8*self.cx, 0.9*self.cy, "Origin: " + str(self.origin))
+        egi.text_at_pos(0.8*self.cx, 0.85*self.cy, "Destination: " + str(self.destination))
+        if (self.toggle == True):
+            egi.text_at_pos(0.8*self.cx, 0.8*self.cy, "Cursor: Destination")
+        if (self.toggle == False):
+            egi.text_at_pos(0.8*self.cx, 0.8*self.cy, "Cursor: Origin")
+        if (len(self.successes) >0):
+            temp = int(self.successes[self.successInt].distance/60) - self.successes[self.successInt].distance/60
+            if (temp < 0):
+                temp = temp * -1
+            else:
+                temp = 1-temp
+
+            egi.text_at_pos(0.8*self.cx, 0.75*self.cy, "Time Taken: " + str(int(self.successes[self.successInt].distance/60)) +"m " + str(int(temp*60)) + "s")
     
 
 

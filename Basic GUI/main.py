@@ -17,37 +17,24 @@ from path import Path
 from math import sqrt
 
 def on_key_press(symbol, modifiers):
-    if (symbol == KEY.SPACE):
-        #How many steps after the first path is found it runs for
-        extraSteps = 5
-        foundGoal = False
-        paths = [Path([],world.origin,False,0)]
-        while (extraSteps > 0):
-            for path in paths:
-                if (path.arrive == False and path.end == False):
-                    paths = paths + path.step(world.destination,world.scats,world.lines)
-                        
-                if (foundGoal == False):
-                    if (path.arrive == True):
-                        foundGoal = True
-
-            if (foundGoal):
-                extraSteps = extraSteps -1
+    if (symbol== KEY.SPACE):
         world.reset()
+        extraPaths = 4
+        paths = [Path([],world.origin,False,0)]
+
+
+        paths[0].search(world.destination,world.scats,world.xM)
+        paths = paths + paths[0].makePaths(extraPaths,world.destination, world.scats,world.xM)
+        i = 0
         for path in paths:
-            if (path.arrive == True):
+            if (i>0):
+                path.search(world.destination,world.scats,world.xM)
+                if (path.arrive == True):
+                    world.successes.append(path)
+            if (i == 0 and path.arrive == True):
                 world.successes.append(path)
-        #while (len(world.successes) > 5):
-        #    i = 0
-        #    time = world.successes[0].distance
-        #    pos = 0
-        #    for path in world.successes:
-        #        if (path.distance > time):
-        #            pos = i
-        #            time = path.distance
-        #    del world.successes[i]
+            i += 1
         world.successes.sort(key=lambda x: x.distance, reverse=False)
-        del world.successes[5:len(world.successes)]
         world.switchRoute()
 
     elif (symbol == KEY.Q):
@@ -85,7 +72,7 @@ def on_resize(cx, cy):
 if __name__ == '__main__':
 
     # create a pyglet window and set glOptions
-    win = window.Window(width=650, height=650, vsync=True, resizable=True)
+    win = window.Window(width=850, height=650, vsync=True, resizable=True)
     glEnable(GL_BLEND)
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
     # needed so that egi knows where to draw
@@ -98,7 +85,7 @@ if __name__ == '__main__':
     win.push_handlers(on_resize)
 
     # create a world for agents
-    world = World(650, 650)
+    world = World(850, 650)
     
 
     while not win.has_exit:
