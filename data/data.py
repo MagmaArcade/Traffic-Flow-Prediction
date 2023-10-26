@@ -9,7 +9,6 @@ from sklearn.preprocessing import StandardScaler, MinMaxScaler
 from sklearn.linear_model import LinearRegression
 
 
-
 def process_data(data, lags):
     """Process data
     Reshape and split train\test data.
