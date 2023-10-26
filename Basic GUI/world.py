@@ -125,12 +125,26 @@ class World(object):
             scat.render()
 
         egi.color = "WHITE"
-        egi.text_at_pos(0.8*self.cx, 0.9*self.cy, "Origin: " + str(self.origin))
-        egi.text_at_pos(0.8*self.cx, 0.85*self.cy, "Destination: " + str(self.destination))
+
+      # Command Notation printed onto the map 
+        commands = [
+        "Tab: Toggle Origin/Dest",
+        "Space: Calculate Path",
+        "Q: Toggle Top 5 Paths",
+        "L_Click: Select Node",
+        "COMMANDS"
+        ]
+
+        for i, command in enumerate(commands):
+            egi.text_at_pos(0.75*self.cx, 0.75*self.cy + i*30, command)
+
+
+        egi.text_at_pos(0.75*self.cx, 0.65*self.cy, "Origin: " + str(self.origin))
+        egi.text_at_pos(0.75*self.cx, 0.6*self.cy, "Destination: " + str(self.destination))
         if (self.toggle == True):
-            egi.text_at_pos(0.8*self.cx, 0.8*self.cy, "Cursor: Destination")
+            egi.text_at_pos(0.75*self.cx, 0.55*self.cy, "Cursor: Destination")
         if (self.toggle == False):
-            egi.text_at_pos(0.8*self.cx, 0.8*self.cy, "Cursor: Origin")
+            egi.text_at_pos(0.75*self.cx, 0.55*self.cy, "Cursor: Origin")
         if (len(self.successes) >0):
             temp = int(self.successes[self.successInt].distance/60) - self.successes[self.successInt].distance/60
             if (temp < 0):
@@ -138,8 +152,10 @@ class World(object):
             else:
                 temp = 1-temp
 
-            egi.text_at_pos(0.8*self.cx, 0.75*self.cy, "Time Taken: " + str(int(self.successes[self.successInt].distance/60)) +"m " + str(int(temp*60)) + "s")
-    
+            egi.text_at_pos(0.75*self.cx, 0.5*self.cy, "Time Taken: " + str(int(self.successes[self.successInt].distance/60)) +"m " + str(int(temp*60)) + "s")
+            #egi.text_at_pos(0.8*self.cx, 0.75*self.cy, "Current Path: " + )
+
+
 
 
     def transform_point(self, point, pos, forward, side):
