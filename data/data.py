@@ -85,8 +85,8 @@ def process_data(data, lags):
     for i, f2 in enumerate(flow2):
         G.add_node(f"Node2-{i+1}", flow=f2)
 
-    start_node = "Node1"
-    goal_node = "Node2"
+    start_node = 'V00' 
+    goal_node = 'V95'
 
     #Implementing the a* algorithm
     #---------------------------------------# 
@@ -97,6 +97,7 @@ def process_data(data, lags):
         g_score[start_node] = 0
         f_score = {node: float('inf') for node in graph.nodes}
         f_score[start_node] = heuristic_function(start_node, goal_node)
+
 
         while open_set:
             current_node = min(open_set, key=lambda node: f_score[node])
@@ -117,7 +118,7 @@ def process_data(data, lags):
                 if neighbor in closed_set:
                     continue  # Ignore neighbors that have already been explored
 
-                tentative_g_score = g_score[current_node] + graph[current_node][neighbor].get('weight', 1)
+                tentative_g_score = g_score[current_node] + graph[current_node][neighbor]
 
                 if neighbor not in open_set or tentative_g_score < g_score[neighbor]:
                     # This is the best path until now
@@ -129,6 +130,9 @@ def process_data(data, lags):
 
     return None  # No path found
 
+    def heuristic_function(node, neighbor):
+        #node as the current node
+        return abs(ord(node) - ord(goal))
 
     # Calculate the shortest path
     shortest_path = a_star_search(G, start_node, goal_node, heuristic_function)
@@ -137,4 +141,7 @@ def process_data(data, lags):
     print(f"Shortest Path: {shortest_path}")
     print(shortest_path)
 
+
+
     return x_train, y_train, x_test, y_test, scaler
+
