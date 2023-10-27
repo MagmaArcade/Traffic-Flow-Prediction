@@ -130,7 +130,7 @@ def process_data(data, lags):
 
     return None  # No path found
 
-    def heuristic_function(node, neighbor):
+    def heuristic_function(neighbor, node):
         #node as the current node
         return abs(ord(node) - ord(goal))
 
