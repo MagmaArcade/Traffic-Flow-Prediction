@@ -1,5 +1,4 @@
 from math import sqrt
-from point2d import Point2D  # Not used here, but easy way to expose it
 
 MIN_FLOAT = 1e-300
 
