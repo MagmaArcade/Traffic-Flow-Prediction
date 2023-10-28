@@ -122,6 +122,3 @@ class Path(object):
                     if (float(current.SCAT) == float(self.path[len(self.path)-1])):
                         tempSearch = False
                         self.path = self.path + tempPath
-
-
-

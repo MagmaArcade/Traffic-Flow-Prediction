@@ -70,9 +70,7 @@ def process_data(data, lags):
     y_test = test[:, -1]     # The last column
 
 
-    #For the IDM acceleration we are using Dijkstra's Algorithm taking into account that all distances cant be -
     #To search the shortest distance and path between 2 nodes we are using a graph
-
     # Set negative values to zero
     flow1 = np.maximum(flow1, 0)
     flow2 = np.maximum(flow2, 0)
@@ -87,30 +85,62 @@ def process_data(data, lags):
     for i, f2 in enumerate(flow2):
         G.add_node(f"Node2-{i+1}", flow=f2)
 
-    # Add edges between nodes
-    for node1 in G.nodes:
-        for node2 in G.nodes:
-            if node1 != node2:
-                weight = np.abs(G.nodes[node1]["flow"] - G.nodes[node2]["flow"])  # Calculate weight based on flow difference
-                G.add_edge(node1, node2, weight=weight)
+    start_node = 'V00' 
+    goal_node = 'V95'
 
-    # Calculate the shortest path and distance
-    shortest_path = nx.shortest_path(G, source="Node1-1", target="Node2-5", weight="weight")
-    shortest_distance = nx.shortest_path_length(G, source="Node1-1", target="Node2-5", weight="weight")
+    #Implementing the a* algorithm
+    #---------------------------------------# 
+    def a_star_search(G, start_node, goal_node, heuristic_function):
+        open_set = []  # Nodes to be explored
+        closed_set = set()  # Nodes already explored
+        g_score = {node: float('inf') for node in graph.nodes}
+        g_score[start_node] = 0
+        f_score = {node: float('inf') for node in graph.nodes}
+        f_score[start_node] = heuristic_function(start_node, goal_node)
 
+
+        while open_set:
+            current_node = min(open_set, key=lambda node: f_score[node])
+            open_set.remove(current_node)
+
+            if current_node == goal_node:
+                # Path found, reconstruct and return it
+                path = []
+                while current_node != start_node:
+                    path.insert(0, current_node)
+                    current_node = came_from[current_node]
+                path.insert(0, start_node)
+                return path
+
+            closed_set.add(current_node)
+
+            for neighbor in graph.neighbors(current_node):
+                if neighbor in closed_set:
+                    continue  # Ignore neighbors that have already been explored
+
+                tentative_g_score = g_score[current_node] + graph[current_node][neighbor]
+
+                if neighbor not in open_set or tentative_g_score < g_score[neighbor]:
+                    # This is the best path until now
+                    came_from[neighbor] = current_node
+                    g_score[neighbor] = tentative_g_score
+                    f_score[neighbor] = g_score[neighbor] + heuristic_function(neighbor, goal_node)
+                    if neighbor not in open_set:
+                        open_set.append(neighbor)
+
+    return None  # No path found
+
+    def heuristic_function(neighbor, node):
+        #node as the current node
+        return abs(ord(node) - ord(goal))
+
+    # Calculate the shortest path
+    shortest_path = a_star_search(G, start_node, goal_node, heuristic_function)
+   
     # Print the results
     print(f"Shortest Path: {shortest_path}")
-    print(f"Shortest Distance: {shortest_distance:.2f}")
     print(shortest_path)
-    print(shortest_distance)
 
-    # Visualize the graph
-    pos = nx.spring_layout(G)
-    labels = nx.get_edge_attributes(G, "weight")
-
-    nx.draw(G, pos, with_labels=True, node_size=100)
-    nx.draw_networkx_edge_labels(G, pos, edge_labels=labels)
-    plt.show()
 
 
     return x_train, y_train, x_test, y_test, scaler

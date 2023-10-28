@@ -85,14 +85,6 @@ def main(argv):
         "--model",
         default="lstm",
         help="The model to train.")
-    parser.add_argument(
-        "--junction",
-        default="1",
-        help="The approach to the site")
-    parser.add_argument(
-        "--scats",
-        default="gru",
-        help="The SCAT site number")
     args = parser.parse_args()
 
     #Define some setting
