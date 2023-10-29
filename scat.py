@@ -23,10 +23,10 @@ class Scat(object):
             self.neighbours.append(float(string))
         
         # Read data file
-        filtered_dfdf = pd.read_csv("Scats Data.csv", encoding='utf-8').fillna(0)
+        filtered_df = pd.read_csv("Scats Data.csv", encoding='utf-8').fillna(0)
 
         # Filter the DataFrame around the SCATS, making a new DataFrame that just has this SCAT
-        filtered_df = filtered_df[filtered_df['SCATS Number'] == int(SCAT)]
+        filtered_df = filtered_df[filtered_df[SCAT] == int(SCAT)]
 
         # Remove duplicates if there are any
         filtered_df = filtered_df.drop_duplicates(subset=['NB_LATITUDE', 'NB_LONGITUDE'])

@@ -3,11 +3,9 @@ from line import Line
 from scat import Scat
 from graphics import egi
 import pandas as pd
-from data.data import process_data2
 
 
 class World(object):
-
     def __init__(self, cx, cy):
         self.cx = cx
         self.cy = cy
