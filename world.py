@@ -114,6 +114,13 @@ class World(object):
                 scat.color = "GREEN"
                 break
 
+    def recolourDO(self):
+        for scat in self.scats:
+            if (scat.SCAT == self.origin):
+                scat.color = "ORANGE"
+            elif (scat.SCAT == self.destination):
+                scat.color = "BLUE"
+
     #Cycle through displaying successful routes
     def switchRoute(self):
         #Reset line colours back to default

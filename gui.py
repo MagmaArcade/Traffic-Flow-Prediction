@@ -76,7 +76,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--origin",
-        default=3001,
+        default=3662,
         help="SCATS site number.")
     parser.add_argument(
         "--destination",
@@ -112,7 +112,12 @@ if __name__ == '__main__':
 
     # create a world for agents
     world = World(850, 650)
-    
+    world.resetOrigin()
+    world.resetDestination()
+    world.origin =args.origin
+    world.destination = args.destination
+    world.recolourDO()
+   
 
     while not win.has_exit:
         win.dispatch_events()
