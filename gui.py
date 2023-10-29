@@ -16,7 +16,7 @@ def on_key_press(symbol, modifiers):
         world.reset()
         #Possible amount of additional routes from Origin to Destination
         extraPaths = 4
-        paths = [Path([],world.origin,False,0, args.time, )]
+        paths = [Path([],world.origin,False,0, args.time, world.model)]
 
         #Optimal path completes its search
         paths[0].search(world.destination,world.scats,world.xM)
