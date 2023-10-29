@@ -9,9 +9,9 @@ from main import predict_traffic_flow
 
 class Path(object):
 
-    def __init__(self, path = [], scat = 0, arrive = False, time = 0, absoluteTime = 0, model = ""):
+    def __init__(self, path = [], scat = 0, arrive = False, time = 0, absoluteTime = 0, model = 'grue'):
         self.path = path
-        self.model = model
+        self.model = copy(model)
         self.absTime = absoluteTime
         path.append(scat)
         #True if the path arrives at the destination
