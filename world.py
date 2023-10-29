@@ -3,8 +3,7 @@ from line import Line
 from scat import Scat
 from graphics import egi
 import pandas as pd
-from data import process_data
-
+from data.data import process_data2
 
 
 class World(object):
@@ -13,7 +12,7 @@ class World(object):
         self.cx = cx
         self.cy = cy
         #Get data via data.py
-        self.df = process_data('Scats Data October 2006.csv')
+        self.df = process_data2('Scats Data October 2006.csv')
         #These are used to scale the lines/nodes appropriately
         self.mix = self.df.loc[0, 'NB_LONGITUDE']
         self.max = self.df.loc[0, 'NB_LONGITUDE']

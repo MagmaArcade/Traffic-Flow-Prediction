@@ -9,6 +9,24 @@ from sklearn.preprocessing import StandardScaler, MinMaxScaler
 from sklearn.linear_model import LinearRegression
 
 
+def process_data2(data):
+    # Read in CSV file
+    df1 = pd.read_csv(data, encoding='utf-8').fillna(0) 
+
+    i = df1.shape[0] -1
+    pr = 0000
+    #Shortens the DF to remove duplicates
+    while (i > -1):
+        cr = df1.loc[i, 'SCATS_Number']
+        if (cr == pr):
+            df1 = df1.drop([i])
+        pr = cr
+        i -=1
+    
+    df1 = df1.reset_index(drop=True)
+
+    return df1
+
 def process_data(data, lags):
     """Process data
     Reshape and split train\test data.
@@ -70,41 +88,3 @@ def process_data(data, lags):
 
 
     return x_train, y_train, x_test, y_test, scaler
-
-
-'''
-    #For the IDM acceleration we are using Dijkstra's Algorithm taking into account that all distances cant be -
-    #To search the shortest distance and path between 2 nodes we are using a graph
-
-    # Set negative values to zero
-    flow1 = np.maximum(flow1, 0)
-    flow2 = np.maximum(flow2, 0)
-
-    # Create a graph
-    G = nx.Graph()
-
-    # Add nodes to the graph based on the flow data
-    for i, f1 in enumerate(flow1):
-        G.add_node(f"Node1-{i+1}", flow=f1)
-
-    for i, f2 in enumerate(flow2):
-        G.add_node(f"Node2-{i+1}", flow=f2)
-
-    # Add edges between nodes
-    for node1 in G.nodes:
-        for node2 in G.nodes:
-            if node1 != node2:
-                weight = np.abs(G.nodes[node1]["flow"] - G.nodes[node2]["flow"])  # Calculate weight based on flow difference
-                G.add_edge(node1, node2, weight=weight)
-
-    # Calculate the shortest path and distance
-    shortest_path = nx.shortest_path(G, source="Node1-1", target="Node2-5", weight="weight")
-    shortest_distance = nx.shortest_path_length(G, source="Node1-1", target="Node2-5", weight="weight")
-
-    # Print the results
-    print(f"Shortest Path: {shortest_path}")
-    print(f"Shortest Distance: {shortest_distance:.2f}")
-    print(shortest_path)
-    print(shortest_distance)
-
-'''
