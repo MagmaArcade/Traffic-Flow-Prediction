@@ -3,13 +3,16 @@ from scat import Scat
 from copy import copy
 from line import Line
 from math import sqrt
+from main import predict_traffic_flow
 
 
 
 class Path(object):
 
-    def __init__(self, path = [], scat = 0, arrive = False, time = 0):
+    def __init__(self, path = [], scat = 0, arrive = False, time = 0, absoluteTime = 0, model = ""):
         self.path = path
+        self.model = model
+        self.absTime = absoluteTime
         path.append(scat)
         #True if the path arrives at the destination
         self.arrive = arrive
@@ -52,13 +55,20 @@ class Path(object):
                                 if (self.path[0] == scat.SCAT):
                                     break
                                 m += 1
-                            #flowSpeed = (-62.5 + sqrt(3906.25 + 3.92*flow))/(-1.96)
+
+                            tempLat, tempLong = scats[i].findClosest(scats[m])
+                            tempFlow = predict_traffic_flow(tempLat, tempLong, self.absTime, self.model)
+                            tempSpeed = -((20)/(760))*tempFlow+65
+                            if (tempSpeed > 60):
+                                tempSpeed = 1/60
+                            else:
+                                tempSpeed = tempSpeed /60/60
                             #Create new path
                             #There's a lot to unpack here. It passes on the path up to this point and the neighbour that the path will expand next. 
                             #The time calculation takes the length of the line via Pythagoras, then converts that to actual meters using the ratio calculated in world, xM
                             #And then, because flow rate was never implemented, its divided by the max speed of the vehicle in m/s to get time taken. 
                             #As this is the first node it's assumed that they didn't need to wait at the intersection for 30s and could drive immediately
-                            temp.append(Path(copy(tempAr), copy(int(neighbour)), False, copy(sqrt((scats[l].pos.x - scats[m].pos.x)*(scats[l].pos.x - scats[m].pos.x)+(scats[l].pos.y - scats[m].pos.y)*(scats[l].pos.y - scats[m].pos.y))*xM/speed)))
+                            temp.append(Path(copy(tempAr), copy(int(neighbour)), False, copy(sqrt((scats[l].pos.x - scats[m].pos.x)*(scats[l].pos.x - scats[m].pos.x)+(scats[l].pos.y - scats[m].pos.y)*(scats[l].pos.y - scats[m].pos.y))*xM/tempSpeed), self.absTime, self.model))
                             extraPaths -= 1
                     #Check if neighbour is not the destination/origin or directly ahead/behind
                     elif (neighbour != destination and neighbour != self.path[0] and neighbour != self.path[j-1] and neighbour != self.path[j+1]):
@@ -81,7 +91,16 @@ class Path(object):
                                     if (self.path[k+1] == scat.SCAT):
                                         break
                                     n += 1
-                                tempDis += (30 + sqrt((scats[m].pos.x - scats[n].pos.x)*(scats[m].pos.x - scats[n].pos.x)+(scats[m].pos.y - scats[n].pos.y)*(scats[m].pos.y - scats[n].pos.y))*xM/speed)
+                                tempLat, tempLong = scats[m].findClosest(scats[n])
+                                tempFlow = predict_traffic_flow(tempLat, tempLong, self.absTime, self.model)
+                                tempSpeed = -((20)/(760))*tempFlow+65
+                                if (tempSpeed > 60):
+                                    tempSpeed = 1/60
+                                else:
+                                    tempSpeed = tempSpeed /60/60
+
+
+                                tempDis += (30 + sqrt((scats[m].pos.x - scats[n].pos.x)*(scats[m].pos.x - scats[n].pos.x)+(scats[m].pos.y - scats[n].pos.y)*(scats[m].pos.y - scats[n].pos.y))*xM/tempSpeed)
                             k += 1
                         m = 0
                         for scat in scats:
@@ -89,7 +108,17 @@ class Path(object):
                                 break
                             m += 1
                         #Create new path
-                        temp.append(Path(copy(tempAr), copy(int(neighbour)), False, copy(tempDis + 30 + sqrt((scats[l].pos.x - scats[m].pos.x)*(scats[l].pos.x - scats[m].pos.x)+(scats[l].pos.y - scats[m].pos.y)*(scats[l].pos.y - scats[m].pos.y))*xM/speed)))
+                        tempLat, tempLong = scats[l].findClosest(scats[m])
+                        tempFlow = predict_traffic_flow(tempLat, tempLong, self.absTime, self.model)
+                        tempSpeed = -((20)/(760))*tempFlow+65
+                        if (tempSpeed > 60):
+                            tempSpeed = 1/60
+                        else:
+                            tempSpeed = tempSpeed /60/60
+
+
+
+                        temp.append(Path(copy(tempAr), copy(int(neighbour)), False, copy(tempDis + 30 + sqrt((scats[l].pos.x - scats[m].pos.x)*(scats[l].pos.x - scats[m].pos.x)+(scats[l].pos.y - scats[m].pos.y)*(scats[l].pos.y - scats[m].pos.y))*xM/tempSpeed),self.absTime, self.model))
                         extraPaths -= 1
             j += 1
         return temp

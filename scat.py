@@ -1,6 +1,7 @@
 from vector2d import Vector2D
 from graphics import egi
 import pandas as pd
+from math import sqrt
 
 
 
@@ -39,7 +40,18 @@ class Scat(object):
             i += 1
 
 
+    def findClosest(self, scat):
+        i = 1
+        distance = sqrt((self.exitLa[0]-scat.exitLa[0])*(self.exitLa[0]-scat.exitLa[0])+(self.exitLo[0]-scat.exitLo[0])*(self.exitLa[0]-scat.exitLo[0]))
+        bestI = 0
+        while i < len(self.exitLa):
+            if (sqrt((self.exitLa[i]-scat.exitLo[0])*(self.exitLa[i]-scat.exitLa[0])+(self.exitLo[i]-scat.exitLo[0])*(self.exitLo[i]-scat.exitLo[0])) < distance):
+                distance = sqrt((self.exitLa[i]-scat.exitLo[0])*(self.exitLa[i]-scat.exitLa[0])+(self.exitLo[i]-scat.exitLo[0])*(self.exitLo[i]-scat.exitLo[0]))
+                bestI = i
+            i += 1
 
+
+        return self.exitLa[bestI], self.exitLo[bestI]
 
 
 

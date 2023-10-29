@@ -27,11 +27,11 @@ if __name__ == "__main__":
         default="lstm",
         help="Model to use for prediction (lstm, gru, saes)")
     args = parser.parse_args()
-    
+
     lat, long = get_coords('data/Scats Data October 2006.csv', args.scats, args.direction)
     if (lat == -1):
         print(args.direction + " is not a valid direction for " + args.scats)
     else:
-        flow_prediction = predict_traffic_flow(lat, long, args.date, args.time, args.model)
+        flow_prediction = predict_traffic_flow(lat, long, args.time, args.model)
         print(flow_prediction)
 

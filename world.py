@@ -10,6 +10,8 @@ class World(object):
         self.cx = cx
         self.cy = cy
         
+        self.model="lstm"
+
         # Read in CSV file
         df1 = pd.read_csv("Scats Data.csv", encoding='utf-8').fillna(0) 
 
@@ -170,6 +172,12 @@ class World(object):
             egi.text_at_pos(0.75*self.cx, 0.55*self.cy, "Cursor: Destination")
         if (self.toggle == False):
             egi.text_at_pos(0.75*self.cx, 0.55*self.cy, "Cursor: Origin")
+        if (self.model == "lstm"):
+            egi.text_at_pos(0.75*self.cx, 0.45*self.cy, "Model: Lstm")
+        elif (self.model == "gru"):
+            egi.text_at_pos(0.75*self.cx, 0.45*self.cy, "Model: Gru")
+        elif (self.model == "saes"):
+            egi.text_at_pos(0.75*self.cx, 0.45*self.cy, "Model: Saes")
         if (len(self.successes) >0):
             temp = int(self.successes[self.successInt].distance/60) - self.successes[self.successInt].distance/60
             if (temp < 0):

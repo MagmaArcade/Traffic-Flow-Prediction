@@ -16,7 +16,7 @@ def on_key_press(symbol, modifiers):
         world.reset()
         #Possible amount of additional routes from Origin to Destination
         extraPaths = 4
-        paths = [Path([],world.origin,False,0)]
+        paths = [Path([],world.origin,False,0, args.time, )]
 
         #Optimal path completes its search
         paths[0].search(world.destination,world.scats,world.xM)
@@ -48,6 +48,14 @@ def on_key_press(symbol, modifiers):
             world.toggle = False
         else:
             world.toggle = True
+    
+    elif (symbol == KEY.W):
+        if (world.model =="saes"):    
+            world.model = "lstm"
+        elif (world.model =="lstm"):
+            world.model = "gru"
+        else:
+            world.model = "saes"
 
     
 def on_mouse_press(x, y, button, modifiers):
