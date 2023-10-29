@@ -116,8 +116,6 @@ class Path(object):
                         else:
                             tempSpeed = tempSpeed /60/60
 
-
-
                         temp.append(Path(copy(tempAr), copy(int(neighbour)), False, copy(tempDis + 30 + sqrt((scats[l].pos.x - scats[m].pos.x)*(scats[l].pos.x - scats[m].pos.x)+(scats[l].pos.y - scats[m].pos.y)*(scats[l].pos.y - scats[m].pos.y))*xM/tempSpeed),self.absTime, self.model))
                         extraPaths -= 1
             j += 1
