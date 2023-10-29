@@ -96,7 +96,6 @@ class World(object):
                 scat.color = "GREEN"
                 break
 
-
     #Reset destination colour back to default
     def resetDestination(self):
         for scat in self.scats:
@@ -122,8 +121,6 @@ class World(object):
                 if ((line.SCAT1 == self.successes[self.successInt].path[i-1] or line.SCAT1 == self.successes[self.successInt].path[i]) and (line.SCAT2 == self.successes[self.successInt].path[i-1] or line.SCAT2 == self.successes[self.successInt].path[i])):
                     line.color = "ORANGE"
             i += 1
-
-        
         
     #Draw all visible objects onto screen
     def render(self):

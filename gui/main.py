@@ -5,6 +5,8 @@ from vector2d import Vector2D
 from world import World
 from path import Path
 from math import sqrt
+import argparse
+
 
 def on_key_press(symbol, modifiers):
     #Calculates up to 5 routes from Origin to Destination
@@ -70,6 +72,20 @@ def on_resize(cx, cy):
 
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--time",
+        default=970,
+        help="The time")
+    parser.add_argument(
+        "--day",
+        default=1,
+        help="The day of the week")
+    parser.add_argument(
+        "--model",
+        default="lstm",
+        help="Model to use for prediction (lstm, gru, saes)")
+    args = parser.parse_args()
 
     # create a pyglet window and set glOptions
     win = window.Window(width=850, height=650, vsync=True, resizable=True)

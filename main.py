@@ -114,7 +114,7 @@ def main():
     names = ['LSTM', 'GRU', 'SAEs']
 
     #Define some setting
-    lag = 4
+    lag = 12
     data = 'data/Scats Data October 2006.csv'
 
     #Call data.py process_data function for testing data
@@ -132,7 +132,13 @@ def main():
         predicted = model.predict(x_test)
         predicted = scaler.inverse_transform(predicted.reshape(-1, 1)).reshape(1, -1)[0]
         y_preds.append(predicted[:288]) ########
+        print("---------------------------------name----------------------------------------------")
         print(name)
+        print("--------------------------------Predict---------------------------------")
+
+        print(predicted)
+        print("--------------------------------x test---------------------------------")
+        print(x_test)
         eva_regress(y_test, predicted)
 
     plot_results(y_test[: 288], y_preds, names)

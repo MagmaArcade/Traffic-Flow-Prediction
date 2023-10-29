@@ -1,7 +1,7 @@
 """
 Processing the data
 """
-import networkx as nx
+#import networkx as nx
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -69,6 +69,10 @@ def process_data(data, lags):
     y_test = test[:, -1]     # The last column
 
 
+    return x_train, y_train, x_test, y_test, scaler
+
+
+'''
     #For the IDM acceleration we are using Dijkstra's Algorithm taking into account that all distances cant be -
     #To search the shortest distance and path between 2 nodes we are using a graph
 
@@ -103,4 +107,4 @@ def process_data(data, lags):
     print(shortest_path)
     print(shortest_distance)
 
-
+'''
