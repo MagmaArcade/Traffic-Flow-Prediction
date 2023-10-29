@@ -57,7 +57,7 @@ def train_seas(models, x_train, y_train, name, config):
     for i in range(len(models) - 1):
         if i > 0:
             p = models[i - 1]
-            hidden_layer_model = Model(input=p.input, output=p.get_layer('hidden').output)
+            hidden_layer_model = Model(p.input, p.get_layer('hidden').output)
             temp = hidden_layer_model.predict(temp)
 
         m = models[i]
@@ -87,7 +87,7 @@ def main(argv):
     args = parser.parse_args()
 
     #Define some setting
-    lag = 12
+    lag = 4
     config = {"batch": 256, "epochs": 2}
     data = 'data/Scats Data October 2006.csv'
 
@@ -105,7 +105,7 @@ def main(argv):
         train_model(m, x_train, y_train, args.model, config)
     if args.model == 'saes':
         x_train = np.reshape(x_train, (x_train.shape[0], x_train.shape[1]))
-        m = model.get_saes([12, 400, 400, 400, 1])
+        m = model.get_saes([4, 400, 400, 400, 1])
         train_seas(m, x_train, y_train, args.model, config)
 
 

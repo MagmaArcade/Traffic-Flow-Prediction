@@ -24,7 +24,7 @@ def initialise():
     global saes
 
     #Define some setting
-    lag = 12
+    lag = 4
     data = 'data/Scats Data October 2006.csv'
 
     lstm = load_model('model/lstm.h5')
@@ -173,12 +173,15 @@ def predict_traffic_flow(latitude, longitude, time, date, model):
 
     # Prepare test data
     x_test = np.array([[scaled_lat, scaled_long, date, Vtime]])
-    
+    #x_test = np.array([[ np.nan , np.nan , np.nan , np.nan ,scaled_lat, scaled_long, np.nan , np.nan , np.nan , np.nan , date, Vtime]])
+
     # Reshape x_test based on the chosen model
     if model in ['saes']:
         x_test = np.reshape(x_test, (x_test.shape[0], x_test.shape[1]))
     else:
         x_test = np.reshape(x_test, (x_test.shape[0], x_test.shape[1], 1))
+
+        
 
     # Map the string name of the model to the actual model object
     model_map = {
@@ -193,6 +196,7 @@ def predict_traffic_flow(latitude, longitude, time, date, model):
         raise ValueError(f"Unsupported model: {model}")
 
     print(f"Select {model}") ####
+    print(x_test.dtype)
 
     # Predict using the selected model
     predicted = selected_model.predict(x_test)
@@ -225,7 +229,7 @@ if __name__ == '__main__':
         help="The day of the month")
     parser.add_argument(
         "--model",
-        default="saes",
+        default="lstm",
         help="Model to use for prediction (lstm, gru, saes)")
     args = parser.parse_args()
 
