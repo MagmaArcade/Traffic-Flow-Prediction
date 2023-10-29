@@ -27,6 +27,22 @@ def process_data2(data):
 
     return df1
 
+def get_coords(data, scats, junction):
+    # Read data file
+    df = pd.read_csv(data, encoding='utf-8').fillna(0)
+
+    # Filter the DataFrame around the SCATS, making a new DataFrame that just has this SCAT
+    filtered_df = df[df['SCATS Number'] == int(scats)]
+
+    # Remove duplicates if there are any
+    filtered_df = filtered_df.drop_duplicates(subset=['NB_LATITUDE', 'NB_LONGITUDE'])
+
+    # Get the lat and long postition for the juction
+    lat = filtered_df['NB_LATITUDE'].iloc[junction]
+    long = filtered_df['NB_LONGITUDE'].iloc[junction]
+
+    return lat, long
+
 def process_data(data, lags):
     """Process data
     Reshape and split train\test data.

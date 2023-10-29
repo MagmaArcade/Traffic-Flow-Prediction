@@ -7,13 +7,31 @@ import warnings
 import numpy as np
 import pandas as pd
 from datetime import datetime
-from data.data import process_data
+from data.data import process_data, get_coords
 from keras.models import load_model
 from tensorflow.keras.utils import plot_model
 import sklearn.metrics as metrics
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 warnings.filterwarnings("ignore")
+
+
+def initialise():
+    global lag
+    global data
+    global lstm
+    global gru
+    global saes
+
+    #Define some setting
+    lag = 12
+    data = 'data/Scats Data October 2006.csv'
+
+    lstm = load_model('model/lstm.h5')
+    gru = load_model('model/gru.h5')
+    saes = load_model('model/saes.h5')
+
+
 
 def MAPE(y_true, y_pred):
     """Mean Absolute Percentage Error
@@ -96,15 +114,8 @@ def plot_results(y_true, y_preds, names):
     
 
 def main():
-    lstm = load_model('model/lstm.h5')
-    gru = load_model('model/gru.h5')
-    saes = load_model('model/saes.h5')
     models = [lstm, gru, saes]
     names = ['LSTM', 'GRU', 'SAEs']
-
-    #Define some setting
-    lag = 12
-    data = 'data/Scats Data October 2006.csv'
 
     #Call data.py process_data function for testing data
     _, _, x_test, y_test, scaler = process_data(data, lag)
@@ -147,16 +158,20 @@ if __name__ == '__main__':
         help="The approach to the site.")
     parser.add_argument(
         "--time",
-        default=970,
-        help="The time")
+        default=13:40,
+        help="The time in 24hr notation")
     parser.add_argument(
         "--day",
-        default=1,
+        default="Monday",
         help="The day of the week")
     parser.add_argument(
         "--model",
         default="lstm",
         help="Model to use for prediction (lstm, gru, saes)")
     args = parser.parse_args()
+
+
+    lat, long = get_coords(data, args.scat)
+
 
     main()
