@@ -50,12 +50,12 @@ def on_key_press(symbol, modifiers):
             world.toggle = True
     
     elif (symbol == KEY.W):
-        if (world.model =="saes"):    
-            world.model = "lstm"
-        elif (world.model =="lstm"):
-            world.model = "gru"
+        if (world.model =='saes'):    
+            world.model = 'lstm'
+        elif (world.model =='lstm'):
+            world.model = 'gru'
         else:
-            world.model = "saes"
+            world.model = 'saes'
 
     
 def on_mouse_press(x, y, button, modifiers):

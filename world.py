@@ -10,7 +10,7 @@ class World(object):
         self.cx = cx
         self.cy = cy
         
-        self.model="lstm"
+        self.model='lstm'
 
         # Read in CSV file
         df1 = pd.read_csv("Scats Data.csv", encoding='utf-8').fillna(0) 
