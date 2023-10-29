@@ -17,16 +17,16 @@ warnings.filterwarnings("ignore")
 
 
 def initialise():
-    global lag
-    global data
-    global lstm
-    global gru
-    global saes
+    """
+    This function initializes global variables and loads pre-trained models.
+    """
+    global lag, data, lstm, gru, saes
 
-    #Define some setting
+    # Define some settings
     lag = 3
     data = 'data/Scats Data October 2006.csv'
 
+    # Load pre-trained models
     lstm = load_model('model/lstm.h5')
     gru = load_model('model/gru.h5')
     saes = load_model('model/saes.h5')
@@ -154,7 +154,7 @@ def convert_str_to_minutes(time):
 
     return total_minutes
 
-def predict_traffic_flow(latitude, longitude, time, date, model):
+def predict_traffic_flow(latitude, longitude, time, model):
     # convert time string to minutes
     time = convert_str_to_minutes(time)
 
@@ -162,44 +162,30 @@ def predict_traffic_flow(latitude, longitude, time, date, model):
     time = time / 1440
     time = int(time)
 
-    # Transform latitude and longitude using respective scalers
     _, _, _, _, scaler = process_data(data, lag)
     scaled_lat = scaler.transform(np.array(latitude).reshape(1, -1))[0][0]
     scaled_long = scaler.transform(np.array(longitude).reshape(1, -1))[0][0]
 
     # Prepare test data
     x_test = np.array([[scaled_lat, scaled_long, time]])
-    print(scaled_lat.dtype)
-    print(scaled_long.dtype)
-    #print(date.dtype) str
-    #print(time.dtype) int
 
-    # Reshape x_test based on the chosen model
     if model in ['saes']:
         x_test = np.reshape(x_test, (x_test.shape[0], x_test.shape[1]))
     else:
         x_test = np.reshape(x_test, (x_test.shape[0], x_test.shape[1], 1))
 
-        
-
-    # Map the string name of the model to the actual model object
     model_map = {
         'lstm': lstm,
         'gru': gru,
         'saes': saes,
     }
 
-    # Select the desired model
     selected_model = model_map.get(model.lower())
     if selected_model is None:
         raise ValueError(f"Unsupported model: {model}")
 
-    print(f"Select {model}") ####
-
-    # Predict using the selected model
     predicted = selected_model.predict(x_test)
 
-    # Transform the prediction using the flow_scaler to get the actual prediction
     final_prediction = scaler.inverse_transform(predicted)
     
     return final_prediction
@@ -227,12 +213,11 @@ if __name__ == '__main__':
         help="Model to use for prediction (lstm, gru, saes)")
     args = parser.parse_args()
 
-    #main()
+    main()
 
+    #testing
     lat, long = get_coords(data, args.scats, args.direction)
     print(lat, long)
-
-    flow_prediction = predict_traffic_flow(latitude=lat, longitude=long, date=args.date, time=args.time, model=args.model)
-
+    flow_prediction = predict_traffic_flow(latitude=lat, longitude=long, time=args.time, model=args.model)
     print(flow_prediction)
 
