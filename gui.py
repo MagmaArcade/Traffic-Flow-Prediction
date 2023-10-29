@@ -75,21 +75,21 @@ def on_resize(cx, cy):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "--scats",
-        default=970,
+        "--origin",
+        default=3001,
         help="SCATS site number.")
     parser.add_argument(
-        "--junction",
-        default=1,
-        help="The approach to the site.")
+        "--destination",
+        default=2846,
+        help="SCATS site number.")
     parser.add_argument(
         "--time",
-        default=970,
+        default="9:30",
         help="The time")
     parser.add_argument(
-        "--day",
-        default=1,
-        help="The day of the week")
+        "--date",
+        default="1/10/06",
+        help="The day of the month")
     parser.add_argument(
         "--model",
         default="lstm",

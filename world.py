@@ -13,7 +13,7 @@ class World(object):
         self.cy = cy
         
         # Read in CSV file
-        df1 = pd.read_csv(data, encoding='utf-8').fillna(0) 
+        df1 = pd.read_csv("Scats Data.csv", encoding='utf-8').fillna(0) 
 
         i = df1.shape[0] -1
         pr = 0000

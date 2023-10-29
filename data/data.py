@@ -21,10 +21,10 @@ def get_coords(data, scats, junction):
     # Remove duplicates if there are any
     filtered_df = filtered_df.drop_duplicates(subset=['NB_LATITUDE', 'NB_LONGITUDE'])
     filtered_df = filtered_df.reset_index()
-    print(filtered_df)
     i = 0
     lat = 0
     long = 0
+    #Calculate the aprx centre of all the junctions. This has flaws and isn't perfect for say, a 90 degree turn
     while ((i + 1) < len(filtered_df)):
         lat = lat + float(filtered_df.loc[i,'NB_LATITUDE'])
         long = long + float(filtered_df.loc[i,'NB_LONGITUDE'])
@@ -33,6 +33,7 @@ def get_coords(data, scats, junction):
     long = long/i
     safeIndex = -1
     i = 0
+    #Calculate the direction the exit to a junction is
     while ((i + 1) < len(filtered_df)):
         tempa = float(filtered_df.loc[i,'NB_LATITUDE']) - lat
         tempo = float(filtered_df.loc[i,'NB_LONGITUDE']) - long

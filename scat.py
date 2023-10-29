@@ -1,5 +1,6 @@
 from vector2d import Vector2D
 from graphics import egi
+import pandas as pd
 
 
 
@@ -11,6 +12,8 @@ class Scat(object):
         self.SCAT = SCAT
         self.neighbours = []
         self.color = 'GREEN'
+        self.exitLa = []
+        self.exitLo = []
 
         #Data storage for the search loop in path.py
         self.distance = 0
@@ -18,6 +21,26 @@ class Scat(object):
 
         for string in neighbours:
             self.neighbours.append(float(string))
+        
+        # Read data file
+        filtered_dfdf = pd.read_csv("Scats Data.csv", encoding='utf-8').fillna(0)
+
+        # Filter the DataFrame around the SCATS, making a new DataFrame that just has this SCAT
+        filtered_df = filtered_df[filtered_df['SCATS Number'] == int(SCAT)]
+
+        # Remove duplicates if there are any
+        filtered_df = filtered_df.drop_duplicates(subset=['NB_LATITUDE', 'NB_LONGITUDE'])
+        filtered_df = filtered_df.reset_index()
+
+        i = 0
+        while (i + 1 < len(filtered_df)):
+            self.exitLa.append(float(filtered_df.loc[i,'NB_LATITUDE']))
+            self.exitLo.append(float(filtered_df.loc[i,'NB_LONGITUDE']))
+
+
+
+
+
 
     def render(self, color=None):
         egi.set_pen_color(name=self.color)
