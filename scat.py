@@ -26,7 +26,7 @@ class Scat(object):
         filtered_df = pd.read_csv("Scats Data.csv", encoding='utf-8').fillna(0)
 
         # Filter the DataFrame around the SCATS, making a new DataFrame that just has this SCAT
-        filtered_df = filtered_df[filtered_df[SCAT] == int(SCAT)]
+        filtered_df = filtered_df[filtered_df['SCATS_Number'] == int(SCAT)]
 
         # Remove duplicates if there are any
         filtered_df = filtered_df.drop_duplicates(subset=['NB_LATITUDE', 'NB_LONGITUDE'])
@@ -36,6 +36,7 @@ class Scat(object):
         while (i + 1 < len(filtered_df)):
             self.exitLa.append(float(filtered_df.loc[i,'NB_LATITUDE']))
             self.exitLo.append(float(filtered_df.loc[i,'NB_LONGITUDE']))
+            i += 1
 
 
 
