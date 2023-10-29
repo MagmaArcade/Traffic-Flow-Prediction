@@ -161,7 +161,7 @@ def predict_traffic_flow(latitude, longitude, time, model):
     # convert time, so its the same as df['Time'] in data.py. which is split in 15 min segments
     time = time / 1440
     time = int(time)
-
+    data = 'data/Scats Data October 2006.csv'
     _, _, _, _, scaler = process_data(data, lag)
     scaled_lat = scaler.transform(np.array(latitude).reshape(1, -1))[0][0]
     scaled_long = scaler.transform(np.array(longitude).reshape(1, -1))[0][0]
