@@ -9,6 +9,7 @@ def process_data(data):
 
     i = df1.shape[0] -1
     pr = 0000
+    #Shortens the DF to remove duplicates
     while (i > -1):
         cr = df1.loc[i, 'SCATS_Number']
         if (cr == pr):

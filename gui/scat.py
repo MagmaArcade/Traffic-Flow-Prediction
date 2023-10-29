@@ -12,6 +12,7 @@ class Scat(object):
         self.neighbours = []
         self.color = 'GREEN'
 
+        #Data storage for the search loop in path.py
         self.distance = 0
         self.fSCAT = float(0000)
 

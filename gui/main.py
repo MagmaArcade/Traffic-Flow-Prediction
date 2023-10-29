@@ -7,29 +7,39 @@ from path import Path
 from math import sqrt
 
 def on_key_press(symbol, modifiers):
+    #Calculates up to 5 routes from Origin to Destination
     if (symbol== KEY.SPACE):
+        #Resets line colouring
         world.reset()
+        #Possible amount of additional routes from Origin to Destination
         extraPaths = 4
         paths = [Path([],world.origin,False,0)]
 
-
+        #Optimal path completes its search
         paths[0].search(world.destination,world.scats,world.xM)
+        #Optimal path data used to make the suboptimal path beginings
         paths = paths + paths[0].makePaths(extraPaths,world.destination, world.scats,world.xM)
         i = 0
         for path in paths:
+            #If check so only suboptimal paths are searched
             if (i>0):
                 path.search(world.destination,world.scats,world.xM)
                 if (path.arrive == True):
                     world.successes.append(path)
+            #If check so that if optimal path fails to get to Destination, its not auto added to the successes
             if (i == 0 and path.arrive == True):
                 world.successes.append(path)
             i += 1
+        #Order successful paths by time
         world.successes.sort(key=lambda x: x.distance, reverse=False)
+        #Display new routes
         world.switchRoute()
 
+    #Switch currently displayed route from Origin to Destination
     elif (symbol == KEY.Q):
         world.switchRoute()
 
+    #Origin/Destination toggle
     elif (symbol == KEY.TAB):
         if (world.toggle):    
             world.toggle = False
@@ -38,7 +48,7 @@ def on_key_press(symbol, modifiers):
 
     
 def on_mouse_press(x, y, button, modifiers):
-
+    #Couldn't get right click to work, so changing Origin/Destination is decided by a toggle
     if (button == 1 and world.toggle == False):
         for scat in world.scats:
             if (sqrt((scat.pos.x-x)*(scat.pos.x-x)+(scat.pos.y-y)*(scat.pos.y-y)) < 10):
