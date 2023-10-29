@@ -94,7 +94,7 @@ def get_coords(data, scats, junction):
 
 def process_data(data, lags):
     """Process data
-    Reshape and split train\test data.
+    Reshape and split train/test data.
 
     # Arguments
         data: String, name of .csv data file.
@@ -109,6 +109,8 @@ def process_data(data, lags):
 
     # Read in CSV file
     df1 = pd.read_csv(data, encoding='utf-8').fillna(0) 
+
+    #creates a copy of the CSV file for training purposes
     df2 = df1.copy()
 
     #Configure separate data sets

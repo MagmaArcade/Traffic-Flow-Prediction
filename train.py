@@ -87,7 +87,7 @@ def main(argv):
     args = parser.parse_args()
 
     #Define some setting
-    lag = 4
+    lag = 3
     config = {"batch": 256, "epochs": 2}
     data = 'data/Scats Data October 2006.csv'
 
@@ -97,15 +97,15 @@ def main(argv):
     #
     if args.model == 'lstm':
         x_train = np.reshape(x_train, (x_train.shape[0], x_train.shape[1], 1))
-        m = model.get_lstm([4, 64, 64, 1])
+        m = model.get_lstm([3, 64, 64, 1])
         train_model(m, x_train, y_train, args.model, config)
     if args.model == 'gru':
         x_train = np.reshape(x_train, (x_train.shape[0], x_train.shape[1], 1))
-        m = model.get_gru([4, 64, 64, 1])
+        m = model.get_gru([3, 64, 64, 1])
         train_model(m, x_train, y_train, args.model, config)
     if args.model == 'saes':
         x_train = np.reshape(x_train, (x_train.shape[0], x_train.shape[1]))
-        m = model.get_saes([4, 400, 400, 400, 1])
+        m = model.get_saes([3, 400, 400, 400, 1])
         train_seas(m, x_train, y_train, args.model, config)
 
 

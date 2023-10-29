@@ -24,7 +24,7 @@ def initialise():
     global saes
 
     #Define some setting
-    lag = 4
+    lag = 3
     data = 'data/Scats Data October 2006.csv'
 
     lstm = load_model('model/lstm.h5')
@@ -158,13 +158,9 @@ def predict_traffic_flow(latitude, longitude, time, date, model):
     # convert time string to minutes
     time = convert_str_to_minutes(time)
 
-    # convert time to V**, so its the same as df['Time'] in data.py. which is split in 15 min segments
-    time = time / 15
-    Vtime = "V" + str(time)
-
-    # Get day of the week from date input
-    #date = datetime.strptime(date,'%d/%m/%Y')
-    #day = date.weekday()
+    # convert time, so its the same as df['Time'] in data.py. which is split in 15 min segments
+    time = time / 1440
+    time = int(time)
 
     # Transform latitude and longitude using respective scalers
     _, _, _, _, scaler = process_data(data, lag)
@@ -172,8 +168,11 @@ def predict_traffic_flow(latitude, longitude, time, date, model):
     scaled_long = scaler.transform(np.array(longitude).reshape(1, -1))[0][0]
 
     # Prepare test data
-    x_test = np.array([[scaled_lat, scaled_long, date, Vtime]])
-    #x_test = np.array([[ np.nan , np.nan , np.nan , np.nan ,scaled_lat, scaled_long, np.nan , np.nan , np.nan , np.nan , date, Vtime]])
+    x_test = np.array([[scaled_lat, scaled_long, time]])
+    print(scaled_lat.dtype)
+    print(scaled_long.dtype)
+    #print(date.dtype) str
+    #print(time.dtype) int
 
     # Reshape x_test based on the chosen model
     if model in ['saes']:
@@ -196,7 +195,6 @@ def predict_traffic_flow(latitude, longitude, time, date, model):
         raise ValueError(f"Unsupported model: {model}")
 
     print(f"Select {model}") ####
-    print(x_test.dtype)
 
     # Predict using the selected model
     predicted = selected_model.predict(x_test)
@@ -223,10 +221,6 @@ if __name__ == '__main__':
         "--time",
         default="13:30",
         help="The time in 24 hr notation")
-    parser.add_argument(
-        "--date",
-        default="1/10/2006",
-        help="The day of the month")
     parser.add_argument(
         "--model",
         default="lstm",
