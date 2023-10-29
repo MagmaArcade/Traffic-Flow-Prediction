@@ -132,7 +132,7 @@ def main():
         predicted = model.predict(x_test)
         predicted = scaler.inverse_transform(predicted.reshape(-1, 1)).reshape(1, -1)[0]
         y_preds.append(predicted[:288])
-        print("---------------------------------name----------------------------------------------")
+        print("---------------------------------name-----------------------------------")
         print(name)
         print("--------------------------------Predict---------------------------------")
 
@@ -162,19 +162,23 @@ def predict_traffic_flow(latitude, longitude, time, date, model):
     time = time / 15
     Vtime = "V" + str(time)
 
-    # Convert date to day of week ?
-
+    # Get day of the week from date input
+    #date = datetime.strptime(date,'%d/%m/%Y')
+    #day = date.weekday()
 
     # Transform latitude and longitude using respective scalers
-    scaled_latitude = scaler.transform(np.array(latitude).reshape(1, -1))[0][0]
-    scaled_longitude = scaler.transform(np.array(longitude).reshape(1, -1))[0][0]
+    _, _, _, _, scaler = process_data(data, lag)
+    scaled_lat = scaler.transform(np.array(latitude).reshape(1, -1))[0][0]
+    scaled_long = scaler.transform(np.array(longitude).reshape(1, -1))[0][0]
 
     # Prepare test data
-    x_test = np.array([[scaled_latitude, scaled_longitude, date, Vtime]])
+    x_test = np.array([[scaled_lat, scaled_long, date, Vtime]])
     
     # Reshape x_test based on the chosen model
-    if model in ['SAEs']:
+    if model in ['saes']:
         x_test = np.reshape(x_test, (x_test.shape[0], x_test.shape[1]))
+    else:
+        x_test = np.reshape(x_test, (x_test.shape[0], x_test.shape[1], 1))
 
     # Map the string name of the model to the actual model object
     model_map = {
@@ -188,13 +192,13 @@ def predict_traffic_flow(latitude, longitude, time, date, model):
     if selected_model is None:
         raise ValueError(f"Unsupported model: {model}")
 
-    # print(f"Select {model}")
+    print(f"Select {model}") ####
 
     # Predict using the selected model
-    predicted = selected_model.predict(x_test, verbose=None)
+    predicted = selected_model.predict(x_test)
 
     # Transform the prediction using the flow_scaler to get the actual prediction
-    final_prediction = flow_scaler.inverse_transform(predicted)
+    final_prediction = scaler.inverse_transform(predicted)
     
     return final_prediction
 
@@ -205,30 +209,32 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--scats",
-        default=970,
+        default="4034",
         help="SCATS site number.")
     parser.add_argument(
         "--direction",
-        default=1,
-        help="The approach to the site.")
+        default="E",
+        help="The approach to the site (N, S, E, W, NE, NW, SE)")
     parser.add_argument(
         "--time",
-        default="9:30",
-        help="The time")
+        default="13:30",
+        help="The time in 24 hr notation")
     parser.add_argument(
         "--date",
-        default="1/10/06",
+        default="1/10/2006",
         help="The day of the month")
     parser.add_argument(
         "--model",
-        default="lstm",
+        default="saes",
         help="Model to use for prediction (lstm, gru, saes)")
     args = parser.parse_args()
 
+    #main()
 
-    #lat, long = get_coords(data, args.scat, args.direction)
+    lat, long = get_coords(data, args.scats, args.direction)
+    print(lat, long)
 
-    #flow_prediction = predict_traffic_flow(latitude=lat, longitude=long, date=args.date, time=args.time, model=args.model)
+    flow_prediction = predict_traffic_flow(latitude=lat, longitude=long, date=args.date, time=args.time, model=args.model)
 
+    print(flow_prediction)
 
-    main()

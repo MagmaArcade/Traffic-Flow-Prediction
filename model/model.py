@@ -1,7 +1,7 @@
 """
 Defination of NN model
 """
-from keras.layers import Dense, Dropout, Activation, LSTM, GRU             # keras is a deep learing libary that works with tensorflow
+from keras.layers import Dense, Dropout, Activation, LSTM, GRU  
 from keras.models import Sequential
 
 
