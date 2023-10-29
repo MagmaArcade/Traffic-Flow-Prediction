@@ -11,8 +11,22 @@ class World(object):
     def __init__(self, cx, cy):
         self.cx = cx
         self.cy = cy
+        
+        # Read in CSV file
+        df1 = pd.read_csv(data, encoding='utf-8').fillna(0) 
+
+        i = df1.shape[0] -1
+        pr = 0000
+        #Shortens the DF to remove duplicates
+        while (i > -1):
+            cr = df1.loc[i, 'SCATS_Number']
+            if (cr == pr):
+                df1 = df1.drop([i])
+            pr = cr
+            i -=1
+        
         #Get data via data.py
-        self.df = process_data2('Scats Data October 2006.csv')
+        self.df = df1.reset_index(drop=True)
         #These are used to scale the lines/nodes appropriately
         self.mix = self.df.loc[0, 'NB_LONGITUDE']
         self.max = self.df.loc[0, 'NB_LONGITUDE']

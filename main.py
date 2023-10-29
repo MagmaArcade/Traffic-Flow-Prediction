@@ -158,17 +158,18 @@ if __name__ == '__main__':
         help="The approach to the site.")
     parser.add_argument(
         "--time",
-        default=13:40,
-        help="The time in 24hr notation")
+        default="9:30",
+        help="The time")
     parser.add_argument(
-        "--day",
-        default="Monday",
-        help="The day of the week")
+        "--date",
+        default="1/10/06",
+        help="The day of the month")
     parser.add_argument(
         "--model",
         default="lstm",
         help="Model to use for prediction (lstm, gru, saes)")
     args = parser.parse_args()
+
 
 
     lat, long = get_coords(data, args.scat)
