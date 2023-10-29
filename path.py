@@ -19,6 +19,8 @@ class Path(object):
         #The name distance is a hangover from before time was calculated. It is calculating the total time of the path
         self.distance = time
 
+        print(self.model)
+
     #Make Paths is to create unoptimal paths after the best path is found
     def makePaths(self, extraPaths = 0, destination = 0, scats=[],xM=0):
         #60 km/h converted to km/s

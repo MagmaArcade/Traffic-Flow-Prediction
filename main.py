@@ -181,6 +181,7 @@ def predict_traffic_flow(latitude, longitude, time, model):
     }
 
     selected_model = model_map.get(model.lower())
+    print(model)
     if selected_model is None:
         raise ValueError(f"Unsupported model: {model}")
 
