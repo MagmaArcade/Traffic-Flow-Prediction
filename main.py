@@ -145,15 +145,70 @@ def main():
 
 
 
+def convert_str_to_minutes(time):
+    # Split the time string into hours and minutes
+    hours, minutes = map(int, time.split(':'))
+
+    # Convert hours to minutes and add the minutes
+    total_minutes = int(hours) * 60 + int(minutes)
+
+    return total_minutes
+
+def predict_traffic_flow(latitude, longitude, time, date, model):
+    # convert time string to minutes
+    time = convert_str_to_minutes(time)
+
+    # convert time to V**, so its the same as df['Time'] in data.py. which is split in 15 min segments
+    time = time / 15
+    Vtime = "V" + str(time)
+
+    # Convert date to day of week ?
+
+
+    # Transform latitude and longitude using respective scalers
+    scaled_latitude = scaler.transform(np.array(latitude).reshape(1, -1))[0][0]
+    scaled_longitude = scaler.transform(np.array(longitude).reshape(1, -1))[0][0]
+
+    # Prepare test data
+    x_test = np.array([[scaled_latitude, scaled_longitude, date, Vtime]])
+    
+    # Reshape x_test based on the chosen model
+    if model in ['SAEs']:
+        x_test = np.reshape(x_test, (x_test.shape[0], x_test.shape[1]))
+
+    # Map the string name of the model to the actual model object
+    model_map = {
+        'lstm': lstm,
+        'gru': gru,
+        'saes': saes,
+    }
+
+    # Select the desired model
+    selected_model = model_map.get(model.lower())
+    if selected_model is None:
+        raise ValueError(f"Unsupported model: {model}")
+
+    # print(f"Select {model}")
+
+    # Predict using the selected model
+    predicted = selected_model.predict(x_test, verbose=None)
+
+    # Transform the prediction using the flow_scaler to get the actual prediction
+    final_prediction = flow_scaler.inverse_transform(predicted)
+    
+    return final_prediction
+
 
 if __name__ == '__main__':
+    initialise()
+
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--scats",
         default=970,
         help="SCATS site number.")
     parser.add_argument(
-        "--junction",
+        "--direction",
         default=1,
         help="The approach to the site.")
     parser.add_argument(
@@ -171,8 +226,9 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
 
+    #lat, long = get_coords(data, args.scat, args.direction)
 
-    lat, long = get_coords(data, args.scat)
+    #flow_prediction = predict_traffic_flow(latitude=lat, longitude=long, date=args.date, time=args.time, model=args.model)
 
 
     main()
