@@ -42,12 +42,12 @@ class Scat(object):
 
     def findClosest(self, scat):
         i = 1
-        distance = sqrt((self.exitLa[0]-scat.exitLa[0])*(self.exitLa[0]-scat.exitLa[0])+(self.exitLo[0]-scat.exitLo[0])*(self.exitLa[0]-scat.exitLo[0]))
+        distance = sqrt(abs(self.exitLa[0]-scat.exitLa[0])*abs(self.exitLa[0]-scat.exitLa[0])+abs(self.exitLo[0]-scat.exitLo[0])*abs(self.exitLa[0]-scat.exitLo[0]))
         bestI = 0
         while i < len(self.exitLa):
-            distance2 = sqrt((self.exitLa[i]-scat.exitLa[0])*(self.exitLa[i]-scat.exitLa[0])+(self.exitLo[i]-scat.exitLo[0])*(self.exitLo[i]-scat.exitLo[0]))
+            distance2 = sqrt(abs(self.exitLa[i]-scat.exitLa[0])*abs(self.exitLa[i]-scat.exitLa[0])+abs(self.exitLo[i]-scat.exitLo[0])*abs(self.exitLo[i]-scat.exitLo[0]))
             if ( distance2 < distance):
-                distance = sqrt((self.exitLa[i]-scat.exitLo[0])*(self.exitLa[i]-scat.exitLa[0])+(self.exitLo[i]-scat.exitLo[0])*(self.exitLo[i]-scat.exitLo[0]))
+                distance = sqrt(abs(self.exitLa[i]-scat.exitLo[0])*abs(self.exitLa[i]-scat.exitLa[0])+abs(self.exitLo[i]-scat.exitLo[0])*abs(self.exitLo[i]-scat.exitLo[0]))
                 bestI = i
             i += 1
 
