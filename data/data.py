@@ -20,21 +20,22 @@ def get_coords(data, scats, junction):
 
     # Remove duplicates if there are any
     filtered_df = filtered_df.drop_duplicates(subset=['NB_LATITUDE', 'NB_LONGITUDE'])
-
+    filtered_df = filtered_df.reset_index()
+    print(filtered_df)
     i = 0
     lat = 0
     long = 0
     while ((i + 1) < len(filtered_df)):
-        lat += filtered_df.loc[i,'NB_LATITUDE']
-        long += filtered_df.loc[i,'NB_LONGITUDE']
+        lat = lat + float(filtered_df.loc[i,'NB_LATITUDE'])
+        long = long + float(filtered_df.loc[i,'NB_LONGITUDE'])
         i += 1
     lat = lat/i
     long = long/i
     safeIndex = -1
     i = 0
     while ((i + 1) < len(filtered_df)):
-        tempa = filtered_df.loc[i,'NB_LATITUDE'] - lat
-        tempo = filtered_df.loc[i,'NB_LONGITUDE'] - long
+        tempa = float(filtered_df.loc[i,'NB_LATITUDE']) - lat
+        tempo = float(filtered_df.loc[i,'NB_LONGITUDE']) - long
         if ( abs(tempa) > abs(tempo)):
             angle = math.degrees(math.atan(tempo/tempa))
             if (tempa > 0):
@@ -85,9 +86,6 @@ def get_coords(data, scats, junction):
                         safeIndex = i
         i += 1
 
-    # Get the lat and long postition for the juction
-    lat = filtered_df['NB_LATITUDE'].iloc[junction]
-    long = filtered_df['NB_LONGITUDE'].iloc[junction]
     if (safeIndex != -1):
         return filtered_df.loc[safeIndex,'NB_LATITUDE'], filtered_df.loc[safeIndex,'NB_LONGITUDE']
     else:
