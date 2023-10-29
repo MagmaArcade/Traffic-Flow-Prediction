@@ -5,6 +5,7 @@ Processing the data
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import math
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
 from sklearn.linear_model import LinearRegression
 
@@ -20,11 +21,77 @@ def get_coords(data, scats, junction):
     # Remove duplicates if there are any
     filtered_df = filtered_df.drop_duplicates(subset=['NB_LATITUDE', 'NB_LONGITUDE'])
 
+    i = 0
+    lat = 0
+    long = 0
+    while ((i + 1) < len(filtered_df)):
+        lat += filtered_df.loc[i,'NB_LATITUDE']
+        long += filtered_df.loc[i,'NB_LONGITUDE']
+        i += 1
+    lat = lat/i
+    long = long/i
+    safeIndex = -1
+    i = 0
+    while ((i + 1) < len(filtered_df)):
+        tempa = filtered_df.loc[i,'NB_LATITUDE'] - lat
+        tempo = filtered_df.loc[i,'NB_LONGITUDE'] - long
+        if ( abs(tempa) > abs(tempo)):
+            angle = math.degrees(math.atan(tempo/tempa))
+            if (tempa > 0):
+                if (angle > 22):
+                    if (tempo > 0):
+                        if (junction == "NE"):
+                            safeIndex = i
+                    else:
+                        if (junction == "NW"):
+                            safeIndex = i
+                else:
+                    if (junction == "N"):
+                        safeIndex = i
+            else:
+                if (angle > 22):
+                    if (tempo > 0):
+                        if (junction == "SE"):
+                            safeIndex = i
+                    else:
+                        if (junction == "SW"):
+                            safeIndex = i
+                else:
+                    if (junction == "S"):
+                        safeIndex = i
+        else:
+            angle = math.degrees(math.atan(tempa/tempo))
+            if (tempo > 0):
+                if (angle > 22):
+                    if (tempa > 0):
+                        if (junction == "NE"):
+                            safeIndex = i
+                    else:
+                        if (junction == "SE"):
+                            safeIndex = i
+                else:
+                    if (junction == "E"):
+                        safeIndex = i
+            else:
+                if (angle > 22):
+                    if (tempa > 0):
+                        if (junction == "NW"):
+                            safeIndex = i
+                    else:
+                        if (junction == "SW"):
+                            safeIndex = i
+                else:
+                    if (junction == "E"):
+                        safeIndex = i
+        i += 1
+
     # Get the lat and long postition for the juction
     lat = filtered_df['NB_LATITUDE'].iloc[junction]
     long = filtered_df['NB_LONGITUDE'].iloc[junction]
-
-    return lat, long
+    if (safeIndex != -1):
+        return filtered_df.loc[safeIndex,'NB_LATITUDE'], filtered_df.loc[safeIndex,'NB_LONGITUDE']
+    else:
+        return -1, -1
 
 def process_data(data, lags):
     """Process data
