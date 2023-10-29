@@ -52,6 +52,7 @@ class Path(object):
                                 if (self.path[0] == scat.SCAT):
                                     break
                                 m += 1
+                            #flowSpeed = (-62.5 + sqrt(3906.25 + 3.92*flow))/(-1.96)
                             #Create new path
                             #There's a lot to unpack here. It passes on the path up to this point and the neighbour that the path will expand next. 
                             #The time calculation takes the length of the line via Pythagoras, then converts that to actual meters using the ratio calculated in world, xM
