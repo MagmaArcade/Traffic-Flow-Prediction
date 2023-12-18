@@ -1,65 +1,65 @@
-# Traffic Flow Prediction System
-COS30018 - Intelligent Systems
+# Traffic Flow Prediction
 
-## Getting Started
+## Installation Prerequisites
 
-These instructions will explain the process of getting the system up and running on your local machine.
+Before deploying the project, ensure the following libraries are installed using the specified commands:
 
-### Prerequisites
+- **Keras:** `pip install keras`
+- **Pandas:** `pip install pandas`
+- **Scikit:** `pip install scikit-learn`
+- **Tensor Flow:** `pip install tensorflow`
+- **Virtual Environment:** `pip install virtualenv`
+- **Pyglet version 1.5.11:** `pip install pyglet==1.5.11`
+- **Python Open GL:** `pip install PyOpenGL`
 
-The following Python 3.7 Libaries are required to run the program. for windowns use pip install, for mac use ---
-```
-keras
-pandas
-scikit-learn
-tensorflow
-virtualenv
-pydot-ng
-```
+## Installing Code
 
-### Installing
+Download or clone the repository into a folder on your computer using the following link:
+[https://github.com/MagmaArcade/Traffic-Flow-Prediction.git](https://github.com/MagmaArcade/Traffic-Flow-Prediction.git)
 
-Download/clone the repository into a folder on your computer.
-```
-https://github.com/MagmaArcade/Traffic-Flow-Prediction.git
-```
+## Training the Model
 
-## Train the model
+To enable traffic prediction, train the learning models by running the following command for each training model, replacing `{model_name}` with options: "lstm," "gru," or "saes."
+`python train.py --model {model_name}`
 
-**Run command below to train the model:**
+## Running the Program
+After training the models, run the program using the following command:
+`python gui.py`
 
-```
-python train.py --model {model_name}
-```
+Arguments for gui.py
+--destination
+--origin
+--time
+--model
 
-You can choose "lstm", "gru" or "saes" as arguments. The ```.h5``` weight file was saved at model folder.
+Example:
+`python gui.py --destination=3001 --origin=4201 --time=14:30 --model=gru`
+
+Alternatively, you can run the following command to get flow prediction for one node:
+`python task1-2test.py`
+
+Additional Arguments for task1-2test.py
+--scats
+--direction
+--time
+--model
+Example:
+`python task1-2test.py --scats=3001 --direction=NE --time=22:15 --model=lstm`
 
 
-**Run command below to run the program:**
+## GUI Interaction
 
-```
-python main.py
-```
+The program opens a GUI menu awaiting user input. Use the following keys to interact with the program:
 
-These are the details for the traffic flow prediction experiment.
+Press the Space key to calculate routes.
+Press the Q key to cycle through calculated routes.
+Press Tab to toggle between selecting a new Origin or Destination.
+Left-click on a node to select a new Origin or Destination.
+Press the W key to cycle through models.
 
-2 epoch trial
-| Metrics | MAE | MSE | RMSE | MAPE |  R2  | Explained variance score |
-| ------- |:---:| :--:| :--: | :--: | :--: | :----------------------: |
-| LSTM | 17.97 | 613.68 | 24.77 | 74.17% | 0.91 | 0.9245 |
-| GRU | 19.35 | 679.71 | 26.07 | 103.312780% | 0.90 | 0.9099 |
-| SAEs | 22.20 | 954.53 | 30.89 | 102.27% | 0.87 | 0.8756 |
 
-![evaluate](TFPS/images/eva 2epochs.png) to be added
 
-600 epoch trial
-| Metrics | MAE | MSE | RMSE | MAPE |  R2  | Explained variance score |
-| ------- |:---:| :--:| :--: | :--: | :--: | :----------------------: |
-| LSTM | - | - | - | - | - | - |
-| GRU | - | - | - | - | - | - |
-| SAEs | - | - | - | - | - | - |
 
-![evaluate](/images/eva.png) to be added
 
 
 ## Acknowledgments
